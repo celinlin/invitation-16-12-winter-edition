@@ -2,7 +2,7 @@
    INTERTECH TALENTS — Invitation interactive (GSAP)
    Le contenu vient de content.js ; ce fichier ne contient que la mise en scène.
    ========================================================================== */
-(function () {
+(async function () {
   "use strict";
 
   const C = window.INVITATION;
@@ -12,7 +12,25 @@
   /* ---------- 1. Invité ---------- */
   const params = new URLSearchParams(location.search);
   const rawId = (params.get("pour") || params.get("invite") || params.get("i") || decodeURIComponent(location.hash.slice(1)) || C.defaultGuest || "").trim().toLowerCase();
-  const g = C.guests.find((x) => x.id.toLowerCase() === rawId) || null;
+  const g = await loadGuest(rawId);
+
+  /* L'invité est demandé au serveur (api/invite) : seule sa fiche est renvoyée,
+     la liste complète n'est jamais envoyée au navigateur.
+     En local (sans serveur Vercel), on lit guests.local.json. */
+  async function loadGuest(id) {
+    if (!id || !/^[a-z0-9-]{1,80}$/.test(id)) return null;
+    const pick = (x) => x && x.prenom ? { prenom: String(x.prenom), nom: String(x.nom || ""), why: String(x.why || ""), awaits: String(x.awaits || "") } : null;
+    try {
+      const r = await fetch(`api/invite?pour=${encodeURIComponent(id)}`, { cache: "no-store" });
+      if (r.ok && (r.headers.get("content-type") || "").includes("json")) return pick(await r.json());
+      if (r.status === 404 && (r.headers.get("content-type") || "").includes("json")) return null;
+    } catch (e) {}
+    try {
+      const r = await fetch("guests.local.json", { cache: "no-store" });
+      if (r.ok) { const list = await r.json(); return pick(list.find((x) => String(x.id).toLowerCase() === id)); }
+    } catch (e) {}
+    return null;
+  }
 
   const fullName = g ? [g.prenom, g.nom].filter(Boolean).join(" ") : "";
   const code = C.event.dateShort;

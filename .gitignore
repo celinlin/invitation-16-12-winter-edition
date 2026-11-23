@@ -1,0 +1,7 @@
+# Données des invités : jamais dans Git
+guests.local.json
+*.local.json
+# Aperçus (contiennent des noms d'invités)
+apercus/
+.vercel
+.DS_Store

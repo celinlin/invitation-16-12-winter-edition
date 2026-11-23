@@ -63,36 +63,10 @@ window.INVITATION = {
   },
 
   /* ------------------------------------------------------------------------
-     INVITÉS — une entrée par personne.
-     id      : identifiant dans l'URL (minuscules, sans espace). Pour éviter
-               qu'on devine les liens, ajoutez un suffixe aléatoire, ex. "c7k2-camille".
-     prenom  : affiché en grand sur l'enveloppe et la carte.
-     nom     : facultatif.
-     why     : pourquoi cette personne est invitée (2–3 phrases max).
-     awaits  : ce qui l'attend (facultatif → texte par défaut sinon).
-     ⚠️ Les deux entrées ci-dessous sont des EXEMPLES fictifs : à remplacer.
+     INVITÉS : la liste n'est PAS dans ce fichier (ni dans GitHub).
+     - En ligne : variable d'environnement Vercel GUESTS_JSON, lue par api/invite.js
+       qui ne renvoie que l'invité demandé.
+     - En local : fichier guests.local.json (ignoré par Git).
+     Format d'un invité : { "id", "prenom", "nom", "why", "awaits" } — voir README.
      ------------------------------------------------------------------------ */
-  guests: [
-    {
-      id: "fella-benabbas",
-      prenom: "Fella",
-      nom: "Benabbas",
-      why: "Parce que cette soirée vous ressemble : des top tech operators et founders réunis pour de vraies conversations, loin des formats impersonnels. On tient à vous compter parmi nous le 16 décembre.",
-      awaits: ""
-    },
-    {
-      id: "exemple-camille",
-      prenom: "Camille",
-      nom: "Exemple",
-      why: "Votre parcours en produit et votre énergie à faire grandir les équipes autour de vous sont exactement ce qui fait la richesse de cette communauté. On aimerait vous avoir dans la pièce.",
-      awaits: "Des échanges avec des Head of Product et des founders qui vivent les mêmes défis que vous, un fireside chat pour prendre de la hauteur, et un cocktail pour prolonger les conversations jusqu'à 23h."
-    },
-    {
-      id: "exemple-sacha",
-      prenom: "Sacha",
-      nom: "Exemple",
-      why: "Vous faites partie des personnes qui construisent la tech sales de demain. On pense que vos rencontres du 16 décembre pourraient compter — dans les deux sens.",
-      awaits: ""
-    }
-  ]
 };

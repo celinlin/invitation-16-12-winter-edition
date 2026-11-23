@@ -36,8 +36,8 @@
 <body>
   <div class="wrap">
     <h1>Liens des invités</h1>
-    <p class="sub">Une invitation par personne : son nom, pourquoi elle est invitée, ce qui l'attend. Les invités se modifient dans <code style="color:var(--ice)">content.js</code>, cette page se met à jour toute seule.</p>
-    <p class="warn">Page interne : elle liste tous les liens. Ne la partagez pas et ne la mettez pas en ligne avec le site (ou protégez-la).</p>
+    <p class="sub">Une invitation par personne : son nom, pourquoi elle est invitée, ce qui l'attend. Les invités se modifient dans <code style="color:var(--ice)">guests.local.json</code> (sur votre ordinateur uniquement), cette page se met à jour toute seule.</p>
+    <p class="warn">Page interne, à ouvrir uniquement sur votre ordinateur. Elle n'est pas mise en ligne sur Vercel.</p>
     <label class="base">Adresse du site en ligne
       <input id="base" type="url" placeholder="https://invitation.intertech-talents.com/">
     </label>
@@ -49,7 +49,7 @@
   <script src="content.js"></script>
   <script>
     (function () {
-      const guests = (window.INVITATION && window.INVITATION.guests) || [];
+      let guests = [];
       const baseInput = document.getElementById("base");
       const here = location.protocol.startsWith("http") ? location.href.replace(/liens\.html.*$/, "") : "";
       let saved = ""; try { saved = localStorage.getItem("it-base") || ""; } catch (e) {}
@@ -77,6 +77,8 @@
           tr.append(n, w, l); rows.appendChild(tr);
         });
       }
+      fetch("guests.local.json", { cache: "no-store" }).then((r) => r.ok ? r.json() : []).then((list) => { guests = list; render(); })
+        .catch(() => { rows.innerHTML = "<tr><td colspan=3>Impossible de lire guests.local.json : lancez la page via un petit serveur local (voir README).</td></tr>"; });
       baseInput.addEventListener("input", () => { try { localStorage.setItem("it-base", baseInput.value); } catch (e) {} render(); });
       render();
     })();
