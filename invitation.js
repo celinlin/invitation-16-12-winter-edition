@@ -15,8 +15,7 @@
   const g = C.guests.find((x) => x.id.toLowerCase() === rawId) || null;
 
   const fullName = g ? [g.prenom, g.nom].filter(Boolean).join(" ") : "";
-  const initials = g ? ((g.prenom || "")[0] + ((g.nom || "")[0] || "")).toUpperCase() : "";
-  const code = g ? `IT-1612 · ${initials}-${String(C.guests.indexOf(g) + 1).padStart(3, "0")}` : "IT-1612";
+  const code = C.event.dateShort;
   const data = {
     event: C.event,
     rsvp: C.rsvp,
@@ -208,11 +207,11 @@
       .to(seal, { scale: .9, duration: .16, ease: "power2.in" }, 0)
       .to(seal, { scale: 1.06, duration: .22, ease: "power2.out" }, .16)
       // le cachet se détache et accompagne le rabat
-      .to(seal, { y: "-=60%", autoAlpha: 0, scale: .82, rotation: -8, duration: .55, ease: "power2.in" }, .34)
+      .to(seal, { autoAlpha: 0, scale: .85, duration: .4, ease: "power2.in" }, .34)
       // 1. le rabat se déplie
       .to(flap, { rotationX: 180, duration: 1.05, ease: "power3.inOut" }, .36)
       .set(flap, { zIndex: 1 }, .36 + 1.05 * .5)
-      .to(recipient, { autoAlpha: .35, duration: .6 }, .5)
+      .to(recipient, { autoAlpha: 0, duration: .5 }, .5)
       // léger recul de l'enveloppe pour laisser respirer la carte
       .to(envStage, { y: mobile ? "8vh" : "10vh", scale: mobile ? .94 : .9, duration: 1.3, ease: "power3.inOut" }, 1.0)
       // 2–3. la carte apparaît puis glisse hors de l'enveloppe
@@ -236,9 +235,10 @@
     const r0 = card.getBoundingClientRect();
     placeCardInReading();
     const reveals = $$(".reveal", card);
-    gsap.set(reveals, { autoAlpha: 0, y: 18 });
+    gsap.set(reveals, { autoAlpha: 0, y: 10 });
 
     const rF = card.getBoundingClientRect();           // position finale (haut de la carte, fixe)
+    card.classList.add("is-expanding");                // contenu long masqué pendant l'agrandissement
     const visibleH = Math.min(rF.height, window.innerHeight - rF.top + 40);
     const dx = (r0.left + r0.width / 2) - (rF.left + rF.width / 2);
 
@@ -246,31 +246,13 @@
 
     const t = gsap.timeline();
     t.to(card, { width: rF.width, height: visibleH, x: 0, y: 0, borderRadius: 6, duration: 1.15, ease: "power3.inOut" }, 0)
+     .add(() => card.classList.remove("is-expanding"))
      .set(card, { clearProps: "width,height,zIndex,borderRadius,transform" })
-     .to(cover, { autoAlpha: 0, duration: .45, ease: "power1.inOut" }, .75)
-     .to(envStage, { y: "70vh", autoAlpha: 0, rotationX: 22, duration: 1.0, ease: "power3.in" }, .05)
+     .to(cover, { autoAlpha: 0, duration: .28, ease: "power1.in" }, 1.05)
+     .to(envStage, { y: "40vh", autoAlpha: 0, duration: .9, ease: "power2.in" }, .05)
      // 5. les informations se révèlent
-     .to(reveals, { autoAlpha: 1, y: 0, duration: .9, ease: "expo.out", stagger: .06 }, .95)
-     .add(() => scramble(guestName, data.guest.fullName), 1.0)
+     .to(reveals, { autoAlpha: 1, y: 0, duration: .8, ease: "power3.out", stagger: .045 }, 1.28)
      .add(finish);
-  }
-
-  /* Effet « décodage » du nom : chaque lettre se résout l'une après l'autre */
-  function scramble(el, text) {
-    if (reduce.matches) { el.textContent = text; return; }
-    const glyphs = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/<>_#*+=";
-    el.setAttribute("aria-label", text);
-    const o = { p: 0 };
-    gsap.to(o, {
-      p: 1, duration: 1.1, ease: "power2.out",
-      onUpdate() {
-        const n = Math.floor(o.p * text.length);
-        let out = text.slice(0, n);
-        for (let i = n; i < text.length; i++) out += text[i] === " " ? " " : glyphs[(Math.random() * glyphs.length) | 0];
-        el.textContent = out;
-      },
-      onComplete() { el.textContent = text; el.removeAttribute("aria-label"); }
-    });
   }
 
   function finish() {

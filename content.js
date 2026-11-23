@@ -24,6 +24,7 @@ window.INVITATION = {
     eyebrow: "Invitation personnelle",
     title: "Paris · 16.12",
     dateLong: "Mercredi 16 décembre 2026",
+    dateShort: "16.12.2026",
     // Pour le compte à rebours et l'ajout au calendrier (heure de Paris)
     doorsISO: "2026-12-16T18:30:00+01:00",
     endISO: "2026-12-16T23:00:00+01:00",

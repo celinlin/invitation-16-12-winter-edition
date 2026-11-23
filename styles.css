@@ -50,7 +50,7 @@ body {
 /* ---------- Atmosphère : fond vaporeux + grain ---------- */
 .atmosphere { position: fixed; inset: 0; overflow: hidden; z-index: 0;
   background: radial-gradient(120% 90% at 50% 110%, var(--ink) 0%, var(--deep) 45%, var(--night) 100%); }
-.glow { position: absolute; border-radius: 50%; filter: blur(40px); will-change: transform; }
+.glow { position: absolute; border-radius: 50%; will-change: transform; }
 .glow--a { width: 70vmax; height: 70vmax; left: -22vmax; top: -30vmax;
   background: radial-gradient(closest-side, rgba(139,172,250,.75), rgba(77,97,244,.35) 50%, transparent 72%);
   animation: drift-a 26s ease-in-out infinite alternate; }
@@ -60,7 +60,7 @@ body {
 .glow--c { width: 36vmax; height: 36vmax; right: 8vmax; top: 6vmax;
   background: radial-gradient(closest-side, rgba(139,172,250,.35), transparent 70%);
   animation: drift-c 22s ease-in-out infinite alternate; }
-.grain { position: absolute; inset: -50%; background-image: var(--grain); opacity: .22; mix-blend-mode: overlay; }
+.grain { position: absolute; inset: 0; background-image: var(--grain); opacity: .07; }
 @keyframes drift-a { to { transform: translate3d(8vmax, 6vmax, 0) scale(1.08); } }
 @keyframes drift-b { to { transform: translate3d(-6vmax, -8vmax, 0) scale(1.12); } }
 @keyframes drift-c { to { transform: translate3d(-10vmax, 8vmax, 0) scale(.9); } }
@@ -79,7 +79,7 @@ main { position: relative; z-index: 1; height: 100%; }
    ========================================================================== */
 .scene { position: absolute; inset: 0; display: grid; place-items: center; align-content: center;
   gap: clamp(28px, 5vh, 48px); padding: 16px; }
-.env-stage { perspective: 1400px; perspective-origin: 50% 30%; }
+.env-stage { perspective: 1400px; perspective-origin: 50% 30%; will-change: transform, opacity; }
 .env-tilt { transform-style: preserve-3d; will-change: transform; }
 
 .envelope {
@@ -100,7 +100,7 @@ main { position: relative; z-index: 1; height: 100%; }
 .env-pocket > svg { position: absolute; inset: 0; width: 100%; height: 100%;
   filter: drop-shadow(0 -2px 6px rgba(10, 3, 50, .35)); }
 .pocket-grain, .flap-grain { position: absolute; inset: 0; background-image: var(--grain); background-size: 180px;
-  opacity: .16; mix-blend-mode: overlay; }
+  opacity: .05; }
 .pocket-grain { -webkit-mask: linear-gradient(#000, #000); }
 .recipient { position: absolute; left: 0; right: 0; bottom: 11%; display: grid; justify-items: center; gap: .35em;
   color: var(--ice); text-align: center; padding: 0 12%; }
@@ -116,7 +116,7 @@ main { position: relative; z-index: 1; height: 100%; }
   transform-origin: 50% 0; transform-style: preserve-3d; will-change: transform; }
 .flap-face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
 .flap-face svg { width: 100%; height: 100%; display: block; }
-.flap-out svg { filter: drop-shadow(0 6px 8px rgba(10, 3, 50, .45)); }
+
 .flap-out .flap-grain { clip-path: polygon(0 0, 100% 0, 55% 90%, 50% 100%, 45% 90%); border-radius: 6px 6px 0 0; }
 .flap-in { transform: rotateX(180deg); }
 
@@ -158,8 +158,8 @@ main { position: relative; z-index: 1; height: 100%; }
   box-shadow: 0 1px 0 rgba(255,255,255,.8) inset, 0 8px 24px -8px rgba(10, 3, 50, .45);
   container-type: inline-size;
 }
-.card-grain { position: absolute; inset: 0; background-image: var(--grain); background-size: 200px; opacity: .12;
-  mix-blend-mode: multiply; pointer-events: none; }
+.card-grain { position: absolute; inset: 0; background-image: var(--grain); background-size: 200px; opacity: .05;
+  pointer-events: none; }
 .card-ornament { position: absolute; top: 0; right: 0; width: 34cqw; max-width: 160px; height: auto; pointer-events: none;
   transform: scaleX(-1) scaleY(-1); transform-origin: center; opacity: .9; }
 
@@ -172,6 +172,8 @@ main { position: relative; z-index: 1; height: 100%; }
 
 /* Version complète : masquée tant que la carte est dans l'enveloppe */
 .full { display: none; }
+.card { will-change: transform; }
+.card.is-expanding .full { visibility: hidden; }
 
 /* ---------- Lecture ---------- */
 .reading { position: fixed; inset: 0; z-index: 10; overflow-y: auto; overflow-x: hidden; visibility: hidden;
@@ -270,14 +272,16 @@ main { position: relative; z-index: 1; height: 100%; }
 
 /* ---------- Touches « tech » ---------- */
 .mono { font-family: var(--font-mono); font-weight: 400; letter-spacing: .06em; }
-.pocket-code { position: absolute; left: 4.5%; bottom: 7.5%; font-size: clamp(8px, calc(var(--env-w) * .017), 10px);
-  color: var(--sky); opacity: .75; text-transform: uppercase; }
+.pocket-code { position: absolute; left: 4.5%; bottom: 7.5%; font-family: var(--font-body); font-weight: 400;
+  font-size: clamp(9px, calc(var(--env-w) * .019), 11px); letter-spacing: .22em; color: var(--sky); opacity: .85; }
 .env-sheen { position: absolute; inset: 0; z-index: 5; border-radius: 6px; pointer-events: none; mix-blend-mode: soft-light; opacity: 0;
   background: radial-gradient(42% 60% at var(--mx, 50%) var(--my, 30%), rgba(255,255,255,.55), transparent 70%);
   transition: opacity .6s; }
 .envelope:hover .env-sheen { opacity: 1; }
-.cover-code { position: absolute; right: 7.5cqw; bottom: 7cqw; font-size: max(7px, 1.9cqw); color: var(--blue); }
-.full-code { display: inline-flex; align-items: center; gap: 8px; font-size: 11px; color: var(--blue);
+.cover-code { position: absolute; right: 7.5cqw; bottom: 7cqw; font-family: var(--font-body); font-weight: 400;
+  font-size: max(8px, 2cqw); letter-spacing: .22em; color: var(--blue); }
+.full-code { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-body); font-weight: 500;
+  font-size: 11px; letter-spacing: .22em; color: var(--blue);
   padding: 7px 11px; border: 1px solid rgba(77, 97, 244, .28); border-radius: 999px; background: rgba(255,255,255,.4);
   position: relative; z-index: 1; margin-right: clamp(0px, 14cqw, 120px); }
 .dot-live { width: 6px; height: 6px; border-radius: 50%; background: var(--amber); box-shadow: 0 0 0 0 rgba(246,169,95,.6);
