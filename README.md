@@ -7,6 +7,16 @@ Microsite : une enveloppe d'où dépasse une carte holographique, puis une invit
 - **En ligne (Vercel)** : la liste est dans la variable d'environnement `GUESTS_JSON`. La fonction `api/invite.js` ne renvoie que la fiche de l'invité demandé. Le navigateur ne reçoit jamais la liste complète.
 - **En local** : la liste est dans `guests.local.json`, ignoré par Git (`.gitignore`) et par Vercel (`.vercelignore`).
 
+## Liens courts (recommandé)
+
+Après chaque modification de `guests.local.json`, lancez :
+
+```bash
+node tools/encrypt-guests.js
+```
+
+Le script attribue à chaque invité un code et une clé, écrit `guests.enc.json` (fiches chiffrées, publiées avec le site) et affiche les liens courts : `…/?i=CODE.CLÉ`. Le fichier publié est illisible sans la clé, qui n'existe que dans le lien de chaque invité. Poussez ensuite `guests.enc.json` sur GitHub. `liens.html` affiche aussi ces liens courts.
+
 ## Liens autonomes (GitHub Pages ou tout hébergement statique)
 
 `liens.html` génère pour chaque invité un lien de la forme `?i=…` qui contient sa fiche (prénom, nom, pourquoi, ce qui l'attend) encodée dans l'URL. Aucune liste n'est stockée en ligne : seule la personne qui a son lien voit son invitation. Ces liens fonctionnent sur GitHub Pages, sans serveur.

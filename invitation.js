@@ -23,7 +23,26 @@
   const params = new URLSearchParams(location.search);
   const token = (params.get("i") || "").trim();
   const rawId = (params.get("pour") || params.get("invite") || decodeURIComponent(location.hash.slice(1)) || C.defaultGuest || "").trim().toLowerCase();
-  const g = decodeToken(token) || await loadGuest(rawId);
+  const g = (await decryptShort(token)) || decodeToken(token) || await loadGuest(rawId);
+
+  /* Lien court : ?i=CODE.CLÉ — la fiche est chiffrée dans guests.enc.json,
+     seule la clé contenue dans le lien de l'invité permet de la lire. */
+  async function decryptShort(t) {
+    const m = /^([A-Za-z0-9_-]{8})\.([A-Za-z0-9_-]{22})$/.exec(t);
+    if (!m || !window.crypto || !crypto.subtle) return null;
+    const bytes = (s) => Uint8Array.from(atob(s.replace(/-/g, "+").replace(/_/g, "/") + "===".slice((s.length + 3) % 4)), (ch) => ch.charCodeAt(0));
+    try {
+      const r = await fetch("guests.enc.json", { cache: "no-store" });
+      if (!r.ok) return null;
+      const entry = (await r.json())[m[1]];
+      if (!entry) return null;
+      const key = await crypto.subtle.importKey("raw", bytes(m[2]), "AES-GCM", false, ["decrypt"]);
+      const plain = await crypto.subtle.decrypt({ name: "AES-GCM", iv: bytes(entry.iv) }, key, bytes(entry.ct));
+      const o = JSON.parse(new TextDecoder().decode(plain));
+      const s = (v, n) => String(v || "").slice(0, n);
+      return o && o.p ? { prenom: s(o.p, 80), nom: s(o.n, 80), why: s(o.w, 600), awaits: s(o.a, 600), why_en: s(o.we, 600), awaits_en: s(o.ae, 600) } : null;
+    } catch (e) { return null; }
+  }
 
   /* Lien autonome : la fiche de l'invité est encodée dans le lien lui-même (?i=…),
      générée par liens.html. Aucune liste d'invités n'est stockée en ligne. */

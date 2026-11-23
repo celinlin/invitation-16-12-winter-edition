@@ -61,10 +61,12 @@
         let bin = ""; new TextEncoder().encode(json).forEach((x) => (bin += String.fromCharCode(x)));
         return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
       }
+      // Lien court si l'invité a été chiffré (node tools/encrypt-guests.js), sinon lien autonome long.
+      const param = (g) => g.code && g.key ? g.code + "." + g.key : token(g);
       function link(g) {
         let b = baseInput.value.trim() || here || "./";
         if (!b.endsWith("/") && !b.endsWith(".html")) b += "/";
-        return b + "?i=" + token(g);
+        return b + "?i=" + param(g);
       }
       function render() {
         rows.textContent = "";
@@ -78,7 +80,7 @@
           const a = document.createElement("div"); a.className = "actions";
           const copy = document.createElement("button"); copy.type = "button"; copy.textContent = "Copier le lien";
           copy.onclick = async () => { try { await navigator.clipboard.writeText(url); copy.textContent = "Copié ✓"; } catch (e) { copy.textContent = "Copie impossible"; } setTimeout(() => (copy.textContent = "Copier le lien"), 1600); };
-          const open = document.createElement("a"); open.className = "open"; open.href = "index.html?i=" + token(g); open.target = "_blank"; open.rel = "noopener"; open.textContent = "Aperçu";
+          const open = document.createElement("a"); open.className = "open"; open.href = "index.html?i=" + param(g); open.target = "_blank"; open.rel = "noopener"; open.textContent = "Aperçu";
           a.append(copy, open); l.append(c, a);
           tr.append(n, w, l); rows.appendChild(tr);
         });
