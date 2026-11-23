@@ -168,7 +168,7 @@ main { position: relative; z-index: 1; height: 100%; }
 /* ---------- Lecture ---------- */
 .reading { position: fixed; inset: 0; z-index: 10; overflow-y: auto; overflow-x: hidden; visibility: hidden;
   -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
-.reading-slot { min-height: 100%; display: grid; justify-items: center; align-items: start;
+.reading-slot { min-height: 100%; display: grid; justify-items: center; align-items: start; perspective: none;
   padding: clamp(72px, 10vh, 112px) 16px clamp(40px, 8vh, 80px); }
 
 .card.is-full { position: relative; inset: auto; left: auto; right: auto; top: auto; height: auto;

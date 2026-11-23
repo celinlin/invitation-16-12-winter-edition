@@ -230,6 +230,8 @@
      Sur l'enveloppe : la carte sort un peu et s'illumine (inclinaison 3D à la souris uniquement).
      Sur l'invitation ouverte : l'hologramme couvre toute la carte et suit le point de contact. */
   let relax;
+  const cardTiltX = gsap.quickTo(card, "rotationX", { duration: .7, ease: "power3.out" });
+  const cardTiltY = gsap.quickTo(card, "rotationY", { duration: .7, ease: "power3.out" });
   function holoAt(x, y, isMouse) {
     if (reduce.matches || busy) return;
     clearTimeout(relax);
@@ -246,12 +248,12 @@
         "--hov": over ? 1 : .3, yPercent: over ? -16 : 0,
         duration: .7, ease: "power3.out", overwrite: "auto"
       });
-      if (isMouse && finePointer.matches) {
-        tiltY(gsap.utils.clamp(-7, 7, ((x - (r.left + r.width / 2)) / window.innerWidth) * 14));
-        tiltX(gsap.utils.clamp(-6, 6, (-(y - (r.top + r.height / 2)) / window.innerHeight) * 12));
-      }
+      // l'enveloppe penche vers le pointeur ou le doigt
+      tiltY(gsap.utils.clamp(-9, 9, ((x - (r.left + r.width / 2)) / (r.width / 2)) * 9));
+      tiltX(gsap.utils.clamp(-8, 8, (-(y - (r.top + r.height / 2)) / (r.height / 2)) * 8));
       if (!isMouse) relax = setTimeout(() => {
         gsap.to(card, { "--hov": 0, yPercent: 0, duration: 1, ease: "power3.out", overwrite: "auto" });
+        tiltX(0); tiltY(0);
         holoTween && holoTween.resume();
       }, 1200);
     } else {
@@ -261,14 +263,22 @@
         "--py": gsap.utils.clamp(0, 1, (y - r.top) / r.height),
         "--hov": 1, duration: .6, ease: "power3.out", overwrite: "auto"
       });
-      relax = setTimeout(() => gsap.to(card, { "--hov": .15, duration: 1.4, ease: "power2.out" }), isMouse ? 1600 : 900);
+      // la carte ouverte penche en 3D autour de la zone visible à l'écran
+      const vh = window.innerHeight, cy = vh / 2;
+      gsap.set(card, { transformPerspective: 1400, transformOrigin: `50% ${cy - r.top}px` });
+      cardTiltY(gsap.utils.clamp(-6, 6, ((x - (r.left + r.width / 2)) / (r.width / 2)) * 6));
+      cardTiltX(gsap.utils.clamp(-5, 5, (-(y - cy) / cy) * 5));
+      relax = setTimeout(() => {
+        gsap.to(card, { "--hov": .15, duration: 1.4, ease: "power2.out" });
+        cardTiltX(0); cardTiltY(0);
+      }, isMouse ? 1600 : 900);
     }
   }
   window.addEventListener("pointermove", (e) => holoAt(e.clientX, e.clientY, e.pointerType === "mouse"), { passive: true });
   window.addEventListener("pointerdown", (e) => { if (e.pointerType !== "mouse") holoAt(e.clientX, e.clientY, false); }, { passive: true });
   window.addEventListener("touchmove", (e) => { const t = e.touches[0]; if (t) holoAt(t.clientX, t.clientY, false); }, { passive: true });
   document.addEventListener("pointerleave", () => {
-    if (opened) return;
+    if (opened) { if (!busy) { cardTiltX(0); cardTiltY(0); } return; }
     gsap.to(card, { "--hov": 0, yPercent: 0, duration: .8, ease: "power3.out", overwrite: "auto" });
     holoTween && holoTween.resume();
   });
@@ -277,6 +287,7 @@
   function open() {
     if (opened || busy) return;
     opened = busy = true;
+    clearTimeout(relax);
     openBtn.disabled = true;
     floatTween && floatTween.kill();
     hintTween && hintTween.kill();
@@ -307,12 +318,12 @@
       .to(card, { "--px": 1, "--py": .2, "--hov": 1, duration: .9, ease: "power2.inOut", overwrite: "auto" }, .2)
       .to(card, { "--hov": 0, duration: .8, ease: "power2.out" }, 1.1)
       .to(recipient, { autoAlpha: 0, duration: .5 }, .4)
-      // léger recul de l'enveloppe pour laisser respirer la carte
-      .to(envStage, { y: mobile ? "8vh" : "10vh", scale: mobile ? .94 : .9, duration: 1.2, ease: "power3.inOut" }, .45)
-      // la carte glisse hors de l'enveloppe
-      .to(card, { yPercent: -66, duration: 1.1, ease: "power3.inOut" }, .55)
-      // puis rejoint sa position de lecture
-      .add(toReading, 1.6);
+      // un seul mouvement continu : l'enveloppe glisse vers le bas pendant que la carte en sort entièrement…
+      .to(envTilt, { rotationX: 0, rotationY: 0, duration: .5, ease: "power2.out", overwrite: "auto" }, 0)
+      .to(envStage, { y: mobile ? "46vh" : "52vh", duration: 1.0, ease: "power2.in" }, .35)
+      .to(card, { yPercent: -114, duration: .95, ease: "power2.in" }, .3)
+      // …puis elle s'agrandit dans le même élan, sans temps d'arrêt
+      .add(toReading, 1.25);
   }
 
   function placeCardInReading() {
@@ -340,13 +351,13 @@
     gsap.set(card, { yPercent: 0, width: r0.width, height: r0.height, x: dx, y: r0.top - rF.top, zIndex: 20, borderRadius: 4 });
 
     const t = gsap.timeline();
-    t.to(card, { width: rF.width, height: visibleH, x: 0, y: 0, borderRadius: 6, duration: 1.15, ease: "power3.inOut" }, 0)
+    t.to(card, { width: rF.width, height: visibleH, x: 0, y: 0, borderRadius: 6, duration: 1.1, ease: "power2.out" }, 0)
      .add(() => card.classList.remove("is-expanding"))
      .set(card, { clearProps: "width,height,zIndex,borderRadius,transform" })
-     .to(cover, { autoAlpha: 0, duration: .28, ease: "power1.in" }, 1.05)
-     .to(envStage, { y: "40vh", autoAlpha: 0, duration: .9, ease: "power2.in" }, .05)
-     // 5. les informations se révèlent
-     .to(reveals, { autoAlpha: 1, y: 0, duration: .8, ease: "power3.out", stagger: .045 }, 1.28)
+     .to(cover, { autoAlpha: 0, duration: .3, ease: "power1.in" }, .8)
+     .to(envStage, { y: "+=30vh", autoAlpha: 0, duration: .5, ease: "power1.in", overwrite: "auto" }, 0)
+     // les informations se révèlent
+     .to(reveals, { autoAlpha: 1, y: 0, duration: .7, ease: "power3.out", stagger: .04 }, 1.0)
      .add(finish);
   }
 
