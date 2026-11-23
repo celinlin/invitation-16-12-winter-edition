@@ -10,5 +10,6 @@ module.exports = (req, res) => {
   try { guests = JSON.parse(process.env.GUESTS_JSON || "[]"); } catch (e) { guests = []; }
   const g = Array.isArray(guests) ? guests.find((x) => String(x.id).toLowerCase() === id) : null;
   if (!g) return res.status(404).json({});
-  return res.status(200).json({ prenom: g.prenom || "", nom: g.nom || "", why: g.why || "", awaits: g.awaits || "" });
+  return res.status(200).json({ prenom: g.prenom || "", nom: g.nom || "", why: g.why || "", awaits: g.awaits || "",
+    why_en: g.why_en || "", awaits_en: g.awaits_en || "" });
 };

@@ -69,4 +69,68 @@ window.INVITATION = {
      - En local : fichier guests.local.json (ignoré par Git).
      Format d'un invité : { "id", "prenom", "nom", "why", "awaits" } — voir README.
      ------------------------------------------------------------------------ */
+
+  /* ------------------------------------------------------------------------
+     TEXTES DE L'INTERFACE (FR / EN)
+     ------------------------------------------------------------------------ */
+  ui: {
+    fr: {
+      why: "Pourquoi vous", awaits: "Ce qui vous attend", date: "Date", place: "Lieu",
+      countdown: "Ouverture des portes dans", d: "jours", h: "heures", m: "min", s: "sec",
+      countdownLive: "C'est ce soir — portes ouvertes depuis 18h30, fermeture à 19h15",
+      program: "Déroulé", ics: "Ajouter au calendrier", replay: "Revoir l'ouverture", for: "Pour",
+      hint: "Ouvrir votre invitation", hintGuest: "{p}, ouvrez votre invitation",
+      openLabel: "Ouvrir votre invitation", openLabelGuest: "Ouvrir l'invitation de {n}",
+      genericCover: "Invitation", genericName: "Votre invitation", genericRecipient: "Vous",
+      docTitle: "Votre invitation — Intertech Talents", docTitleGuest: "{p}, votre invitation — Intertech Talents",
+      live: "Invitation ouverte. Soirée du {d}.", liveGuest: "Invitation de {n} ouverte. Soirée du {d}."
+    },
+    en: {
+      why: "Why you", awaits: "What awaits you", date: "Date", place: "Venue",
+      countdown: "Doors open in", d: "days", h: "hours", m: "min", s: "sec",
+      countdownLive: "It's tonight — doors opened at 6:30 PM, they close at 7:15 PM",
+      program: "Schedule", ics: "Add to calendar", replay: "Replay the opening", for: "For",
+      hint: "Open your invitation", hintGuest: "{p}, open your invitation",
+      openLabel: "Open your invitation", openLabelGuest: "Open {n}'s invitation",
+      genericCover: "Invitation", genericName: "Your invitation", genericRecipient: "You",
+      docTitle: "Your invitation — Intertech Talents", docTitleGuest: "{p}, your invitation — Intertech Talents",
+      live: "Invitation opened. Evening of {d}.", liveGuest: "{n}'s invitation opened. Evening of {d}."
+    }
+  },
+
+  /* ------------------------------------------------------------------------
+     VERSION ANGLAISE : remplace les textes français quand on choisit EN.
+     ------------------------------------------------------------------------ */
+  en: {
+    event: {
+      eyebrow: "Personal invitation",
+      dateLong: "Wednesday, December 16, 2026",
+      place: "A very elegant venue in the heart of Paris",
+      placeNote: "The address is sent only to guests whose seat is confirmed.",
+      club: "The social club for top tech operators and founders, 700+ members between Paris and San Francisco.",
+      stage: "Fireside chat: speakers will be announced soon.",
+      program: [
+        { time: "6:30 PM", label: "Doors open and networking" },
+        { time: "7:15 PM", label: "Doors close — no entry after" },
+        { time: "7:30 PM", label: "Fireside chat, until 9 PM" },
+        { time: "9 PM", label: "Networking cocktail, until 11 PM" }
+      ],
+      facts: ["By invitation", "Limited seats", "Catering included"],
+      noTickets: "No tickets will be sold at the door.",
+      signature: "Intertech Talents · Winter Edition 2026",
+      calendarLocation: "Paris (address sent to guests whose seat is confirmed)"
+    },
+    rsvp: {
+      heading: "Get your ticket",
+      label: "Book my seat",
+      heroLabel: "Book my seat",
+      note: "Seats are limited and going fast."
+    },
+    defaults: {
+      greeting: "Hello,",
+      intro: "On Wednesday, December 16, Intertech Talents brings together top tech operators and founders in Paris: tech sales, product, engineering, data, marketing, comms. An evening to meet your peers and future colleagues, with a fireside chat and plenty of networking.",
+      why: "Because the best conversations happen when the right people are in the same room, and you are one of them.",
+      awaits: "Networking from 6:30 PM, a fireside chat from 7:30 to 9 PM, then a networking cocktail until 11 PM, in a very elegant venue in the heart of Paris. Catering included."
+    }
+  }
 };

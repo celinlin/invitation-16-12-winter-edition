@@ -5,7 +5,17 @@
 (async function () {
   "use strict";
 
-  const C = window.INVITATION;
+  const BASE = window.INVITATION;
+  /* Langue : ?lang=en|fr, sinon le dernier choix du visiteur, sinon français */
+  const pickLang = (v) => (v === "en" || v === "fr" ? v : null);
+  let lang = pickLang(new URLSearchParams(location.search).get("lang"));
+  if (!lang) { try { lang = pickLang(localStorage.getItem("it-lang")); } catch (e) {} }
+  lang = lang || "fr";
+  const bundle = (l) => l === "en"
+    ? { ...BASE, event: { ...BASE.event, ...BASE.en.event }, rsvp: { ...BASE.rsvp, ...BASE.en.rsvp }, defaults: { ...BASE.defaults, ...BASE.en.defaults } }
+    : BASE;
+  let C = bundle(lang);
+  let U = BASE.ui[lang];
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
 
@@ -24,7 +34,8 @@
       const bytes = Uint8Array.from(atob(b64), (ch) => ch.charCodeAt(0));
       const o = JSON.parse(new TextDecoder().decode(bytes));
       if (!o || !o.p) return null;
-      return { prenom: String(o.p).slice(0, 80), nom: String(o.n || "").slice(0, 80), why: String(o.w || "").slice(0, 600), awaits: String(o.a || "").slice(0, 600) };
+      const s = (v, n) => String(v || "").slice(0, n);
+      return { prenom: s(o.p, 80), nom: s(o.n, 80), why: s(o.w, 600), awaits: s(o.a, 600), why_en: s(o.we, 600), awaits_en: s(o.ae, 600) };
     } catch (e) { return null; }
   }
 
@@ -33,7 +44,7 @@
      En local (sans serveur Vercel), on lit guests.local.json. */
   async function loadGuest(id) {
     if (!id || !/^[a-z0-9-]{1,80}$/.test(id)) return null;
-    const pick = (x) => x && x.prenom ? { prenom: String(x.prenom), nom: String(x.nom || ""), why: String(x.why || ""), awaits: String(x.awaits || "") } : null;
+    const pick = (x) => x && x.prenom ? { prenom: String(x.prenom), nom: String(x.nom || ""), why: String(x.why || ""), awaits: String(x.awaits || ""), why_en: String(x.why_en || ""), awaits_en: String(x.awaits_en || "") } : null;
     try {
       const r = await fetch(`api/invite?pour=${encodeURIComponent(id)}`, { cache: "no-store" });
       if (r.ok && (r.headers.get("content-type") || "").includes("json")) return pick(await r.json());
@@ -47,29 +58,56 @@
   }
 
   const fullName = g ? [g.prenom, g.nom].filter(Boolean).join(" ") : "";
-  const code = C.event.dateShort;
-  const data = {
-    event: C.event,
-    rsvp: C.rsvp,
-    defaults: C.defaults,
-    guest: {
-      prenomOrGeneric: g ? g.prenom : "Invitation",
-      fullName: g ? fullName : "Votre invitation",
-      fullNameOrGeneric: g ? fullName : "Vous",
-      greeting: g ? `${g.prenom},` : C.defaults.greeting,
-      why: (g && g.why) || C.defaults.why,
-      awaits: (g && g.awaits) || C.defaults.awaits,
-      code,
-      hint: g ? `${g.prenom}, ouvrez votre invitation` : "Ouvrir votre invitation"
-    },
-    a11y: { openLabel: g ? `Ouvrir l'invitation de ${fullName}` : "Ouvrir votre invitation" }
-  };
+  const fill = (t) => t.replace("{p}", g ? g.prenom : "").replace("{n}", fullName).replace("{d}", C.event.dateLong);
+  let data, ticking = false;
   if (!g) document.documentElement.classList.add("is-generic");
-  if (g) document.title = `${g.prenom}, votre invitation — Intertech Talents`;
 
   /* ---------- 2. Rendu (textContent uniquement : aucun HTML injecté) ---------- */
-  const get = (path) => path.split(".").reduce((o, k) => (o == null ? o : o[k]), data);
-  $$("[data-bind]").forEach((el) => { const v = get(el.dataset.bind); if (v != null) el.textContent = v; });
+  const tl = $("#timeline"), chips = $("#chips");
+  function render() {
+    C = bundle(lang); U = BASE.ui[lang];
+    const en = lang === "en";
+    data = {
+      event: C.event, rsvp: C.rsvp, defaults: C.defaults, ui: U,
+      guest: {
+        prenomOrGeneric: g ? g.prenom : U.genericCover,
+        fullName: g ? fullName : U.genericName,
+        fullNameOrGeneric: g ? fullName : U.genericRecipient,
+        why: (g && (en ? g.why_en : g.why)) || C.defaults.why,
+        awaits: (g && (en ? g.awaits_en : g.awaits)) || C.defaults.awaits,
+        code: C.event.dateShort,
+        hint: fill(g ? U.hintGuest : U.hint)
+      },
+      a11y: { openLabel: fill(g ? U.openLabelGuest : U.openLabel) }
+    };
+    const get = (path) => path.split(".").reduce((o, k) => (o == null ? o : o[k]), data);
+    $$("[data-bind]").forEach((el) => { const v = get(el.dataset.bind); if (v != null && typeof v !== "object") el.textContent = v; });
+    tl.textContent = "";
+    C.event.program.forEach((p) => {
+      const li = document.createElement("li"); li.className = "step";
+      const t = document.createElement("span"); t.className = "step-time"; t.textContent = p.time;
+      const l = document.createElement("span"); l.className = "step-label"; l.textContent = p.label;
+      li.append(t, l); tl.appendChild(li);
+    });
+    chips.textContent = "";
+    C.event.facts.forEach((f) => { const li = document.createElement("li"); li.textContent = f; chips.appendChild(li); });
+    document.documentElement.lang = lang;
+    document.title = fill(g ? U.docTitleGuest : U.docTitle);
+    $$(".lang-btn").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.lang === lang)));
+    if (ticking) tick();
+  }
+  render();
+
+  $$(".lang-btn").forEach((b) => b.addEventListener("click", () => {
+    if (b.dataset.lang === lang) return;
+    lang = b.dataset.lang;
+    try { localStorage.setItem("it-lang", lang); } catch (e) {}
+    const targets = [$(".scene"), $("#card")];
+    gsap.to(targets, { autoAlpha: .35, duration: .18, ease: "power1.out", onComplete() {
+      render();
+      gsap.to(targets, { autoAlpha: 1, duration: .3, ease: "power1.out", clearProps: "opacity,visibility" });
+    } });
+  }));
 
   const logoTpl = $("#tpl-logo");
   $$("[data-logo]").forEach((el) => {
@@ -77,17 +115,6 @@
     if (el.closest(".card, .env-pocket")) { svg.setAttribute("aria-hidden", "true"); svg.removeAttribute("role"); }
     el.appendChild(svg);
   });
-
-  const tl = $("#timeline");
-  C.event.program.forEach((p) => {
-    const li = document.createElement("li");
-    li.className = "step";
-    const t = document.createElement("span"); t.className = "step-time"; t.textContent = p.time;
-    const l = document.createElement("span"); l.className = "step-label"; l.textContent = p.label;
-    li.append(t, l); tl.appendChild(li);
-  });
-  const chips = $("#chips");
-  C.event.facts.forEach((f) => { const li = document.createElement("li"); li.textContent = f; chips.appendChild(li); });
 
   const rsvpBtn = $("#rsvpBtn");
   rsvpBtn.href = C.rsvp.url;
@@ -102,14 +129,14 @@
   function tick() {
     const now = Date.now();
     if (now >= end) { cdBox.hidden = true; return; }
-    if (now >= doors) { cdBox.classList.add("is-live"); cdTitle.textContent = "C'est ce soir — portes ouvertes depuis 18h30, fermeture à 19h15"; return; }
+    if (now >= doors) { cdBox.classList.add("is-live"); cdTitle.textContent = U.countdownLive; return; }
     let s = Math.floor((doors - now) / 1000);
     const d = Math.floor(s / 86400); s -= d * 86400;
     const h = Math.floor(s / 3600); s -= h * 3600;
     const m = Math.floor(s / 60); s -= m * 60;
     cdEls.d.textContent = pad(d); cdEls.h.textContent = pad(h); cdEls.m.textContent = pad(m); cdEls.s.textContent = pad(s);
   }
-  tick(); setInterval(tick, 1000);
+  tick(); setInterval(tick, 1000); ticking = true;
 
   /* ---------- Ajout au calendrier (.ics généré localement) ---------- */
   $("#icsBtn").addEventListener("click", () => {
@@ -199,36 +226,52 @@
   const tiltX = gsap.quickTo(envTilt, "rotationX", { duration: .8, ease: "power3.out" });
   const tiltY = gsap.quickTo(envTilt, "rotationY", { duration: .8, ease: "power3.out" });
   const sheen = $("#sheen");
-  function onMove(e) {
-    if (opened || reduce.matches || !finePointer.matches) return;
-    const r = envTilt.getBoundingClientRect();
-    sheen.style.setProperty("--mx", `${((e.clientX - r.left) / r.width) * 100}%`);
-    sheen.style.setProperty("--my", `${((e.clientY - r.top) / r.height) * 100}%`);
-    // effet chromé : reflets pilotés par la position du pointeur sur la carte
-    const cr = card.getBoundingClientRect();
-    const over = e.clientX > cr.left && e.clientX < cr.right && e.clientY > cr.top && e.clientY < r.bottom;
-    const px = gsap.utils.clamp(0, 1, (e.clientX - cr.left) / cr.width);
-    const py = gsap.utils.clamp(0, 1, (e.clientY - cr.top) / (r.bottom - cr.top));
-    holoTween && holoTween.pause();
-    gsap.to(card, { "--px": px, "--py": py, "--hov": over ? 1 : .25, yPercent: over ? -16 : 0,
-      duration: .7, ease: "power3.out", overwrite: "auto" });
-    const dx = (e.clientX - (r.left + r.width / 2)) / window.innerWidth;
-    const dy = (e.clientY - (r.top + r.height / 2)) / window.innerHeight;
-    tiltY(gsap.utils.clamp(-7, 7, dx * 14));
-    tiltX(gsap.utils.clamp(-6, 6, -dy * 12));
+  /* Pointeur ou doigt → reflets holographiques.
+     Sur l'enveloppe : la carte sort un peu et s'illumine (inclinaison 3D à la souris uniquement).
+     Sur l'invitation ouverte : l'hologramme couvre toute la carte et suit le point de contact. */
+  let relax;
+  function holoAt(x, y, isMouse) {
+    if (reduce.matches || busy) return;
+    clearTimeout(relax);
+    if (!opened) {
+      const r = envTilt.getBoundingClientRect();
+      sheen.style.setProperty("--mx", `${((x - r.left) / r.width) * 100}%`);
+      sheen.style.setProperty("--my", `${((y - r.top) / r.height) * 100}%`);
+      const cr = card.getBoundingClientRect();
+      const over = x > cr.left && x < cr.right && y > cr.top && y < r.bottom;
+      holoTween && holoTween.pause();
+      gsap.to(card, {
+        "--px": gsap.utils.clamp(0, 1, (x - cr.left) / cr.width),
+        "--py": gsap.utils.clamp(0, 1, (y - cr.top) / (r.bottom - cr.top)),
+        "--hov": over ? 1 : .3, yPercent: over ? -16 : 0,
+        duration: .7, ease: "power3.out", overwrite: "auto"
+      });
+      if (isMouse && finePointer.matches) {
+        tiltY(gsap.utils.clamp(-7, 7, ((x - (r.left + r.width / 2)) / window.innerWidth) * 14));
+        tiltX(gsap.utils.clamp(-6, 6, (-(y - (r.top + r.height / 2)) / window.innerHeight) * 12));
+      }
+      if (!isMouse) relax = setTimeout(() => {
+        gsap.to(card, { "--hov": 0, yPercent: 0, duration: 1, ease: "power3.out", overwrite: "auto" });
+        holoTween && holoTween.resume();
+      }, 1200);
+    } else {
+      const r = card.getBoundingClientRect();
+      gsap.to(card, {
+        "--px": gsap.utils.clamp(0, 1, (x - r.left) / r.width),
+        "--py": gsap.utils.clamp(0, 1, (y - r.top) / r.height),
+        "--hov": 1, duration: .6, ease: "power3.out", overwrite: "auto"
+      });
+      relax = setTimeout(() => gsap.to(card, { "--hov": .15, duration: 1.4, ease: "power2.out" }), isMouse ? 1600 : 900);
+    }
   }
-  window.addEventListener("pointermove", onMove, { passive: true });
+  window.addEventListener("pointermove", (e) => holoAt(e.clientX, e.clientY, e.pointerType === "mouse"), { passive: true });
+  window.addEventListener("pointerdown", (e) => { if (e.pointerType !== "mouse") holoAt(e.clientX, e.clientY, false); }, { passive: true });
+  window.addEventListener("touchmove", (e) => { const t = e.touches[0]; if (t) holoAt(t.clientX, t.clientY, false); }, { passive: true });
   document.addEventListener("pointerleave", () => {
     if (opened) return;
     gsap.to(card, { "--hov": 0, yPercent: 0, duration: .8, ease: "power3.out", overwrite: "auto" });
     holoTween && holoTween.resume();
   });
-  window.addEventListener("pointermove", (e) => {
-    if (!opened || busy || reduce.matches || !finePointer.matches) return;
-    const r = card.getBoundingClientRect();
-    const px = gsap.utils.clamp(0, 1, (e.clientX - r.left) / r.width);
-    gsap.to(card, { "--px": px, duration: 1.2, ease: "power3.out", overwrite: "auto" });
-  }, { passive: true });
 
   /* ---------- 6. Ouverture ---------- */
   function open() {
@@ -311,7 +354,7 @@
     busy = false;
     scene.setAttribute("aria-hidden", "true");
     scene.style.visibility = "hidden";
-    live.textContent = g ? `Invitation de ${fullName} ouverte. Soirée du ${C.event.dateLong}.` : `Invitation ouverte. Soirée du ${C.event.dateLong}.`;
+    live.textContent = fill(g ? U.liveGuest : U.live);
     guestName.focus({ preventScroll: true });
   }
 

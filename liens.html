@@ -57,7 +57,7 @@
       const rows = document.getElementById("rows");
       // Le lien contient la fiche de l'invité (encodée) : rien n'est stocké en ligne.
       function token(g) {
-        const json = JSON.stringify({ p: g.prenom || "", n: g.nom || "", w: g.why || "", a: g.awaits || "" });
+        const json = JSON.stringify({ p: g.prenom || "", n: g.nom || "", w: g.why || "", a: g.awaits || "", we: g.why_en || "", ae: g.awaits_en || "" });
         let bin = ""; new TextEncoder().encode(json).forEach((x) => (bin += String.fromCharCode(x)));
         return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
       }
