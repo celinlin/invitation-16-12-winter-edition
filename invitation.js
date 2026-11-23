@@ -135,7 +135,7 @@
   /* ---------- 4. Entrée ---------- */
   function intro() {
     gsap.set(envelope, { visibility: "visible" });
-    gsap.set(flap, { rotationX: 0, zIndex: 4 });
+    gsap.set(flap, { rotationX: 0, zIndex: 4, autoAlpha: 1 });
     gsap.set(seal, { autoAlpha: 1, scale: 1, y: 0, rotation: 0 });
     gsap.set(card, { yPercent: 0 });
 
@@ -211,6 +211,7 @@
       // 1. le rabat se déplie
       .to(flap, { rotationX: 180, duration: 1.05, ease: "power3.inOut" }, .36)
       .set(flap, { zIndex: 1 }, .36 + 1.05 * .5)
+      .to(flap, { autoAlpha: 0, duration: .4, ease: "power1.out" }, .36 + 1.05 * .42)
       .to(recipient, { autoAlpha: 0, duration: .5 }, .5)
       // léger recul de l'enveloppe pour laisser respirer la carte
       .to(envStage, { y: mobile ? "8vh" : "10vh", scale: mobile ? .94 : .9, duration: 1.3, ease: "power3.inOut" }, 1.0)
