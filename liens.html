@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Liens des invités — Intertech Talents</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Antonio:wght@600;700&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root { --ice:#daf9ff; --sky:#8bacfa; --amber:#f6a95f; --blue:#4d61f4; --ink:#280f91; --deep:#1b0a72; }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; background: radial-gradient(100% 70% at 0 0, #3b3fd6 0%, var(--deep) 55%, #12054f 100%) fixed;
+      color: var(--ice); font: 300 15px/1.5 "Jost", system-ui, sans-serif; padding: 48px 16px; }
+    .wrap { max-width: 920px; margin: 0 auto; }
+    h1 { font: 700 clamp(36px, 6vw, 56px)/.94 "Antonio", sans-serif; margin: 0; }
+    .sub { color: var(--sky); margin: 12px 0 32px; max-width: 46em; }
+    .warn { border-left: 2px solid var(--amber); padding: 10px 14px; background: rgba(246,169,95,.08); margin-bottom: 28px; font-size: 14px; }
+    table { width: 100%; border-collapse: collapse; background: var(--ice); color: var(--ink); border-radius: 6px; overflow: hidden; }
+    th, td { text-align: left; padding: 14px 16px; border-bottom: 1px solid rgba(40,15,145,.12); vertical-align: top; }
+    th { font: 500 11px/1 "Jost"; letter-spacing: .22em; text-transform: uppercase; color: var(--blue); }
+    td.name { font: 600 20px/1.1 "Antonio", sans-serif; white-space: nowrap; }
+    td.why { font-size: 13.5px; color: #3a2d96; max-width: 30em; }
+    code { font-size: 12.5px; word-break: break-all; color: var(--ink); }
+    .actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+    button, a.open { font: 500 12px/1 "Jost"; letter-spacing: .06em; border: 1px solid rgba(40,15,145,.25); background: #fff;
+      color: var(--ink); padding: 8px 12px; border-radius: 999px; cursor: pointer; text-decoration: none; }
+    button:hover, a.open:hover { background: var(--ink); color: var(--ice); }
+    .base { display: flex; gap: 10px; align-items: center; margin-bottom: 20px; flex-wrap: wrap; }
+    .base input { flex: 1; min-width: 240px; padding: 10px 12px; border-radius: 6px; border: 1px solid rgba(218,249,255,.3);
+      background: rgba(255,255,255,.08); color: var(--ice); font: 400 14px "Jost"; }
+    @media (max-width: 640px) { td.why { display: none; } th.why { display: none; } td.name { white-space: normal; } }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Liens des invités</h1>
+    <p class="sub">Une invitation par personne : son nom, pourquoi elle est invitée, ce qui l'attend. Les invités se modifient dans <code style="color:var(--ice)">content.js</code>, cette page se met à jour toute seule.</p>
+    <p class="warn">Page interne : elle liste tous les liens. Ne la partagez pas et ne la mettez pas en ligne avec le site (ou protégez-la).</p>
+    <label class="base">Adresse du site en ligne
+      <input id="base" type="url" placeholder="https://invitation.intertech-talents.com/">
+    </label>
+    <table>
+      <thead><tr><th>Invité</th><th class="why">Pourquoi</th><th>Lien personnel</th></tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </div>
+  <script src="content.js"></script>
+  <script>
+    (function () {
+      const guests = (window.INVITATION && window.INVITATION.guests) || [];
+      const baseInput = document.getElementById("base");
+      const here = location.protocol.startsWith("http") ? location.href.replace(/liens\.html.*$/, "") : "";
+      let saved = ""; try { saved = localStorage.getItem("it-base") || ""; } catch (e) {}
+      baseInput.value = saved || here;
+      const rows = document.getElementById("rows");
+      function link(id) {
+        let b = baseInput.value.trim() || here || "./";
+        if (!b.endsWith("/") && !b.endsWith(".html")) b += "/";
+        return b + "?pour=" + encodeURIComponent(id);
+      }
+      function render() {
+        rows.textContent = "";
+        guests.forEach((g) => {
+          const tr = document.createElement("tr");
+          const n = document.createElement("td"); n.className = "name"; n.textContent = [g.prenom, g.nom].filter(Boolean).join(" ");
+          const w = document.createElement("td"); w.className = "why"; w.textContent = g.why || "—";
+          const l = document.createElement("td");
+          const url = link(g.id);
+          const c = document.createElement("code"); c.textContent = url;
+          const a = document.createElement("div"); a.className = "actions";
+          const copy = document.createElement("button"); copy.type = "button"; copy.textContent = "Copier le lien";
+          copy.onclick = async () => { try { await navigator.clipboard.writeText(url); copy.textContent = "Copié ✓"; } catch (e) { copy.textContent = "Copie impossible"; } setTimeout(() => (copy.textContent = "Copier le lien"), 1600); };
+          const open = document.createElement("a"); open.className = "open"; open.href = "index.html?pour=" + encodeURIComponent(g.id); open.target = "_blank"; open.rel = "noopener"; open.textContent = "Aperçu";
+          a.append(copy, open); l.append(c, a);
+          tr.append(n, w, l); rows.appendChild(tr);
+        });
+      }
+      baseInput.addEventListener("input", () => { try { localStorage.setItem("it-base", baseInput.value); } catch (e) {} render(); });
+      render();
+    })();
+  </script>
+</body>
+</html>

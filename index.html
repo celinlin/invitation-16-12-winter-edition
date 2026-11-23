@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Votre invitation — Intertech Talents</title>
+  <meta name="description" content="Invitation personnelle — Intertech Talents, Paris, mercredi 16 décembre 2026.">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#1b0a72">
+  <meta property="og:title" content="Une invitation vous attend — Intertech Talents">
+  <meta property="og:description" content="Paris · 16.12 — Le social club des top tech operators et founders.">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Antonio:wght@400;600;700&family=Jost:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Fond vaporeux et à grains (charte : « à privilégier ») -->
+  <div class="atmosphere" aria-hidden="true">
+    <span class="glow glow--a"></span>
+    <span class="glow glow--b"></span>
+    <span class="glow glow--c"></span>
+    <span class="grain"></span>
+  </div>
+
+  <a class="brandmark" href="https://intertech-talents.com/" aria-label="Intertech Talents — site officiel" data-logo></a>
+
+  <main>
+    <!-- ============ SCÈNE : L'ENVELOPPE ============ -->
+    <section class="scene" id="scene" aria-label="Votre invitation">
+      <div class="env-stage" id="envStage">
+        <div class="env-tilt" id="envTilt">
+          <div class="envelope" id="envelope">
+            <span class="env-shadow" aria-hidden="true"></span>
+
+            <!-- Fond intérieur de l'enveloppe -->
+            <div class="env-back" aria-hidden="true">
+              <svg class="liner" viewBox="0 0 100 70" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="linerGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0" stop-color="#4d61f4"/>
+                    <stop offset="1" stop-color="#280f91"/>
+                  </linearGradient>
+                </defs>
+                <rect width="100" height="70" fill="url(#linerGrad)"/>
+              </svg>
+            </div>
+
+            <!-- La carte -->
+            <article class="card" id="card" aria-labelledby="guestName">
+              <div class="card-grain" aria-hidden="true"></div>
+              <svg class="card-ornament" aria-hidden="true" viewBox="0 0 200 200">
+                <defs>
+                  <linearGradient id="ornA" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0" stop-color="#f6a95f"/>
+                    <stop offset="1" stop-color="#f6a95f" stop-opacity="0"/>
+                  </linearGradient>
+                  <linearGradient id="ornB" x1="1" y1="0" x2="0" y2="1">
+                    <stop offset="0" stop-color="#4d61f4"/>
+                    <stop offset="1" stop-color="#8bacfa" stop-opacity="0"/>
+                  </linearGradient>
+                </defs>
+                <path d="M200 0 A200 200 0 0 0 0 200 L40 200 A160 160 0 0 1 200 40 Z" fill="url(#ornB)" opacity=".55"/>
+                <path d="M200 60 A140 140 0 0 0 60 200 L92 200 A108 108 0 0 1 200 92 Z" fill="url(#ornA)"/>
+                <path d="M200 116 A84 84 0 0 0 116 200 L200 200 Z" fill="url(#ornB)" opacity=".8"/>
+              </svg>
+
+              <!-- Recto visible dans l'enveloppe -->
+              <div class="cover" aria-hidden="true">
+                <span class="cover-eyebrow" data-bind="event.eyebrow"></span>
+                <span class="cover-name" data-bind="guest.prenomOrGeneric"></span>
+                <span class="cover-title" data-bind="event.title"></span>
+                <span class="cover-logo" data-logo></span>
+                <span class="cover-code mono" data-bind="guest.code"></span>
+              </div>
+
+              <!-- Invitation complète -->
+              <div class="full" id="full">
+                <header class="full-head reveal">
+                  <span class="full-logo" data-logo></span>
+                  <span class="full-code mono"><span class="dot-live" aria-hidden="true"></span><span data-bind="guest.code"></span></span>
+                </header>
+
+                <div class="full-hero">
+                  <p class="kicker reveal" data-bind="event.eyebrow"></p>
+                  <h1 class="guest-name reveal" id="guestName" tabindex="-1" data-bind="guest.fullName"></h1>
+                  <p class="event-title reveal" data-bind="event.title"></p>
+                  <p class="lede reveal" data-bind="defaults.intro"></p>
+                  <a class="hero-cta reveal" id="heroCta" href="#" target="_blank" rel="noopener">
+                    <span data-bind="rsvp.heroLabel"></span>
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </a>
+                </div>
+
+                <div class="duo">
+                  <section class="duo-col reveal">
+                    <h2 class="label">Pourquoi vous</h2>
+                    <p data-bind="guest.why"></p>
+                  </section>
+                  <section class="duo-col reveal">
+                    <h2 class="label">Ce qui vous attend</h2>
+                    <p data-bind="guest.awaits"></p>
+                  </section>
+                </div>
+
+                <dl class="facts reveal">
+                  <div class="fact">
+                    <dt class="label">Date</dt>
+                    <dd class="fact-main" data-bind="event.dateLong"></dd>
+                  </div>
+                  <div class="fact">
+                    <dt class="label">Lieu</dt>
+                    <dd class="fact-main" data-bind="event.place"></dd>
+                    <dd class="fact-note" data-bind="event.placeNote"></dd>
+                  </div>
+                </dl>
+
+                <section class="countdown reveal" id="countdown" aria-labelledby="cdTitle">
+                  <h2 class="label" id="cdTitle">Ouverture des portes dans</h2>
+                  <div class="cd-grid mono" role="timer" aria-live="off">
+                    <span class="cd-cell"><b data-cd="d">00</b><i>jours</i></span>
+                    <span class="cd-sep" aria-hidden="true">:</span>
+                    <span class="cd-cell"><b data-cd="h">00</b><i>heures</i></span>
+                    <span class="cd-sep" aria-hidden="true">:</span>
+                    <span class="cd-cell"><b data-cd="m">00</b><i>min</i></span>
+                    <span class="cd-sep" aria-hidden="true">:</span>
+                    <span class="cd-cell"><b data-cd="s">00</b><i>sec</i></span>
+                  </div>
+                </section>
+
+                <section class="program reveal" aria-labelledby="progTitle">
+                  <h2 class="label" id="progTitle">Déroulé</h2>
+                  <ol class="timeline" id="timeline"></ol>
+                </section>
+
+                <p class="stage-line reveal">
+                  <span class="silhouette" aria-hidden="true"></span>
+                  <span data-bind="event.stage"></span>
+                </p>
+
+                <div class="rsvp reveal">
+                  <h2 class="rsvp-title" data-bind="rsvp.heading"></h2>
+                  <ul class="chips" id="chips" aria-label="Informations"></ul>
+                  <a class="btn" id="rsvpBtn" href="#" target="_blank" rel="noopener">
+                    <span data-bind="rsvp.label"></span>
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </a>
+                  <button class="btn-ghost" id="icsBtn" type="button">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M3.5 10h17M8 3v4M16 3v4M12 13v5M9.5 15.5h5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                    Ajouter au calendrier
+                  </button>
+                  <p class="rsvp-note"><span data-bind="rsvp.note"></span> <strong data-bind="event.noTickets"></strong></p>
+                </div>
+
+                <footer class="full-foot reveal">
+                  <p class="club" data-bind="event.club"></p>
+                  <div class="foot-row">
+                    <p class="signature">— <span data-bind="event.signature"></span></p>
+                    <button class="replay" id="replayBtn" type="button">
+                      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.4-5.7M4 4v4.5h4.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                      Revoir l'ouverture
+                    </button>
+                  </div>
+                </footer>
+              </div>
+            </article>
+
+            <!-- Poche avant (rabats latéraux + rabat bas) -->
+            <div class="env-pocket" aria-hidden="true">
+              <svg viewBox="0 0 100 70" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="sideL" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0" stop-color="#3726c2"/>
+                    <stop offset="1" stop-color="#4636d8"/>
+                  </linearGradient>
+                  <linearGradient id="sideR" x1="1" y1="0" x2="0" y2="0">
+                    <stop offset="0" stop-color="#2f1fb0"/>
+                    <stop offset="1" stop-color="#4233d2"/>
+                  </linearGradient>
+                  <linearGradient id="bottom" x1="0" y1="1" x2="0" y2="0">
+                    <stop offset="0" stop-color="#3a2bc9"/>
+                    <stop offset="1" stop-color="#5546e6"/>
+                  </linearGradient>
+                </defs>
+                <path d="M0 0 L46.5 38.2 Q50 41 46.5 43.6 L0 70 Z" fill="url(#sideL)"/>
+                <path d="M100 0 L53.5 38.2 Q50 41 53.5 43.6 L100 70 Z" fill="url(#sideR)"/>
+                <path d="M0 70 L45 35.6 Q50 31.8 55 35.6 L100 70 Z" fill="url(#bottom)"/>
+                <path d="M0 70 L45 35.6 Q50 31.8 55 35.6 L100 70" fill="none" stroke="#8bacfa" stroke-opacity=".28" stroke-width=".25" vector-effect="non-scaling-stroke"/>
+              </svg>
+              <span class="pocket-grain"></span>
+              <div class="recipient">
+                <span class="recipient-label">Pour</span>
+                <span class="recipient-name" data-bind="guest.fullNameOrGeneric"></span>
+              </div>
+              <span class="pocket-logo" data-logo></span>
+              <span class="pocket-code mono" data-bind="guest.code"></span>
+            </div>
+
+            <!-- Rabat supérieur (deux faces) + cachet -->
+            <div class="env-flap" id="flap" aria-hidden="true">
+              <div class="flap-face flap-out">
+                <svg viewBox="0 0 100 44" preserveAspectRatio="none">
+                  <defs>
+                    <linearGradient id="flapOut" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0" stop-color="#3a28c4"/>
+                      <stop offset="1" stop-color="#5a4df0"/>
+                    </linearGradient>
+                  </defs>
+                  <path d="M0 0 H100 L55.2 39.6 Q50 44 44.8 39.6 Z" fill="url(#flapOut)"/>
+                  <path d="M0 0 L44.8 39.6 Q50 44 55.2 39.6 L100 0" fill="none" stroke="#daf9ff" stroke-opacity=".22" stroke-width=".25" vector-effect="non-scaling-stroke"/>
+                </svg>
+                <span class="flap-grain"></span>
+              </div>
+              <div class="flap-face flap-in">
+                <svg viewBox="0 0 100 44" preserveAspectRatio="none">
+                  <defs>
+                    <linearGradient id="flapIn" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0" stop-color="#8bacfa"/>
+                      <stop offset=".55" stop-color="#4d61f4"/>
+                      <stop offset="1" stop-color="#f6a95f"/>
+                    </linearGradient>
+                  </defs>
+                  <path d="M0 0 H100 L55.2 39.6 Q50 44 44.8 39.6 Z" fill="url(#flapIn)"/>
+                </svg>
+              </div>
+            </div>
+
+            <!-- Reflet qui suit le pointeur -->
+            <span class="env-sheen" id="sheen" aria-hidden="true"></span>
+
+            <!-- Cachet (suit le rabat à l'ouverture) -->
+            <span class="seal" id="seal" aria-hidden="true">
+              <span class="seal-ring"></span>
+              <span class="seal-mark">IT.</span>
+            </span>
+
+            <!-- Zone d'interaction accessible -->
+            <button class="env-hit" id="openBtn" type="button" aria-describedby="hint">
+              <span class="sr-only" data-bind="a11y.openLabel"></span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <p class="hint" id="hint"><span class="hint-line" aria-hidden="true"></span><span data-bind="guest.hint"></span></p>
+    </section>
+
+    <!-- ============ LECTURE : la carte vient se placer ici ============ -->
+    <section class="reading" id="reading" aria-hidden="true">
+      <div class="reading-slot" id="slot"></div>
+    </section>
+
+    <p class="sr-only" id="live" aria-live="polite"></p>
+  </main>
+
+  <noscript>
+    <div class="noscript">
+      <p>Intertech Talents — Paris · Mercredi 16 décembre 2026</p>
+      <p>18h30 ouverture des portes et networking · 19h15 fermeture des portes · 19h30 – 21h fireside chat · 21h cocktail networking, jusqu'à 23h.</p>
+      <p>Activez JavaScript pour ouvrir votre invitation.</p>
+    </div>
+  </noscript>
+
+  <template id="tpl-logo"><svg role="img" aria-label="Intertech Talents" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="39.85 83.92 295.65 209.95" preserveAspectRatio="xMidYMid meet"><g fill="currentColor" fill-opacity="1"><g transform="translate(36.586306, 180.000003)"><g><path d="M 3.265625 0 L 3.265625 -93.328125 L 17.1875 -93.328125 L 17.1875 0 Z M 3.265625 0"/></g></g></g><g fill="currentColor" fill-opacity="1"><g transform="translate(57.032605, 180.000003)"><g><path d="M 2.890625 0 L 2.890625 -74.515625 L 16.1875 -74.515625 L 16.1875 -72.75 L 15.8125 -68.859375 L 16.0625 -68.859375 C 18.0625 -73.628906 21.363281 -76.015625 25.96875 -76.015625 C 33.65625 -76.015625 37.5 -70.914062 37.5 -60.71875 L 37.5 0 L 24.078125 0 L 24.078125 -59.203125 C 24.078125 -62.546875 22.867188 -64.21875 20.453125 -64.21875 C 19.109375 -64.21875 18.082031 -63.566406 17.375 -62.265625 C 16.664062 -60.972656 16.3125 -59.367188 16.3125 -57.453125 L 16.3125 0 Z M 2.890625 0"/></g></g></g><g fill="currentColor" fill-opacity="1"><g transform="translate(97.42346, 180.000003)"><g><path d="M 19.3125 1.375 C 14.300781 1.375 10.769531 -0.00390625 8.71875 -2.765625 C 6.664062 -5.523438 5.640625 -9.410156 5.640625 -14.421875 L 5.640625 -63.09375 L 0.5 -63.09375 L 0.5 -74.515625 L 5.640625 -74.515625 L 5.640625 -89.3125 L 19.0625 -89.3125 L 19.0625 -74.515625 L 27.71875 -74.515625 L 27.71875 -63.09375 L 19.0625 -63.09375 L 19.0625 -17.3125 C 19.0625 -13.125 20.566406 -11.03125 23.578125 -11.03125 C 24.921875 -11.03125 26.46875 -11.203125 28.21875 -11.546875 L 28.21875 0.125 C 27.132812 0.457031 25.773438 0.75 24.140625 1 C 22.515625 1.25 20.90625 1.375 19.3125 1.375 Z M 19.3125 1.375"/></g></g></g><g fill="currentColor" fill-opacity="1"><g transform="translate(126.274071, 180.000003)"><g><path d="M 19.0625 1.375 C 13.457031 1.375 9.234375 -0.441406 6.390625 -4.078125 C 3.546875 -7.710938 2.125 -12.582031 2.125 -18.6875 L 2.125 -56.078125 C 2.125 -62.179688 3.566406 -67.03125 6.453125 -70.625 C 9.335938 -74.21875 13.582031 -76.015625 19.1875 -76.015625 C 24.625 -76.015625 28.765625 -74.382812 31.609375 -71.125 C 34.453125 -67.863281 35.875 -63.140625 35.875 -56.953125 L 35.875 -33.359375 L 15.546875 -33.359375 L 15.546875 -16.1875 C 15.546875 -11.914062 16.800781 -9.78125 19.3125 -9.78125 C 21.738281 -9.78125 22.953125 -11.578125 22.953125 -15.171875 L 22.953125 -26.84375 L 35.875 -26.84375 L 35.875 -15.421875 C 35.789062 -10.160156 34.285156 -6.046875 31.359375 -3.078125 C 28.429688 -0.109375 24.332031 1.375 19.0625 1.375 Z M 15.546875 -42.265625 L 22.953125 -42.265625 L 22.953125 -58.578125 C 23.035156 -62.847656 21.820312 -64.984375 19.3125 -64.984375 C 16.800781 -64.984375 15.546875 -62.847656 15.546875 -58.578125 Z M 15.546875 -42.265625"/></g></g></g><g fill="currentColor" fill-opacity="1"><g transform="translate(164.281614, 180.000003)"><g><path d="M 2.890625 0 L 2.890625 -74.515625 L 16.0625 -74.515625 L 16.0625 -72.625 L 15.421875 -68.359375 L 15.8125 -68.359375 C 16.644531 -70.867188 17.875 -72.769531 19.5 -74.0625 C 21.132812 -75.363281 22.914062 -76.015625 24.84375 -76.015625 C 25.507812 -76.015625 26.15625 -75.972656 26.78125 -75.890625 C 27.40625 -75.804688 27.925781 -75.679688 28.34375 -75.515625 L 28.34375 -62.09375 C 27.675781 -62.34375 27.050781 -62.488281 26.46875 -62.53125 C 25.882812 -62.570312 25.300781 -62.59375 24.71875 -62.59375 C 19.113281 -62.59375 16.3125 -58.914062 16.3125 -51.5625 L 16.3125 0 Z M 2.890625 0"/></g></g></g><g fill="currentColor" fill-opacity="1"><g transform="translate(193.383102, 180.000003)"><g><path d="M 19.3125 1.375 C 14.300781 1.375 10.769531 -0.00390625 8.71875 -2.765625 C 6.664062 -5.523438 5.640625 -9.410156 5.640625 -14.421875 L 5.640625 -63.09375 L 0.5 -63.09375 L 0.5 -74.515625 L 5.640625 -74.515625 L 5.640625 -89.3125 L 19.0625 -89.3125 L 19.0625 -74.515625 L 27.71875 -74.515625 L 27.71875 -63.09375 L 19.0625 -63.09375 L 19.0625 -17.3125 C 19.0625 -13.125 20.566406 -11.03125 23.578125 -11.03125 C 24.921875 -11.03125 26.46875 -11.203125 28.21875 -11.546875 L 28.21875 0.125 C 27.132812 0.457031 25.773438 0.75 24.140625 1 C 22.515625 1.25 20.90625 1.375 19.3125 1.375 Z M 19.3125 1.375"/></g></g></g><g fill="currentColor" fill-opacity="1"><g transform="translate(222.233713, 180.000003)"><g><path d="M 19.0625 1.375 C 13.457031 1.375 9.234375 -0.441406 6.390625 -4.078125 C 3.546875 -7.710938 2.125 -12.582031 2.125 -18.6875 L 2.125 -56.078125 C 2.125 -62.179688 3.566406 -67.03125 6.453125 -70.625 C 9.335938 -74.21875 13.582031 -76.015625 19.1875 -76.015625 C 24.625 -76.015625 28.765625 -74.382812 31.609375 -71.125 C 34.453125 -67.863281 35.875 -63.140625 35.875 -56.953125 L 35.875 -33.359375 L 15.546875 -33.359375 L 15.546875 -16.1875 C 15.546875 -11.914062 16.800781 -9.78125 19.3125 -9.78125 C 21.738281 -9.78125 22.953125 -11.578125 22.953125 -15.171875 L 22.953125 -26.84375 L 35.875 -26.84375 L 35.875 -15.421875 C 35.789062 -10.160156 34.285156 -6.046875 31.359375 -3.078125 C 28.429688 -0.109375 24.332031 1.375 19.0625 1.375 Z M 15.546875 -42.265625 L 22.953125 -42.265625 L 22.953125 -58.578125 C 23.035156 -62.847656 21.820312 -64.984375 19.3125 -64.984375 C 16.800781 -64.984375 15.546875 -62.847656 15.546875 -58.578125 Z M 15.546875 -42.265625"/></g></g></g><g fill="currentColor" fill-opacity="1"><g transform="translate(260.241245, 180.000003)"><g><path d="M 19.1875 1.375 C 13.582031 1.375 9.335938 -0.359375 6.453125 -3.828125 C 3.566406 -7.296875 2.125 -12.289062 2.125 -18.8125 L 2.125 -56.078125 C 2.125 -62.515625 3.585938 -67.445312 6.515625 -70.875 C 9.441406 -74.300781 13.75 -76.015625 19.4375 -76.015625 C 24.375 -76.015625 28.347656 -74.488281 31.359375 -71.4375 C 34.367188 -68.382812 35.875 -63.640625 35.875 -57.203125 L 35.875 -44.40625 L 22.953125 -44.40625 L 22.953125 -59.078125 C 22.953125 -62.753906 21.738281 -64.59375 19.3125 -64.59375 C 16.800781 -64.59375 15.546875 -62.628906 15.546875 -58.703125 L 15.546875 -16.0625 C 15.546875 -13.882812 15.898438 -12.332031 16.609375 -11.40625 C 17.328125 -10.488281 18.226562 -10.03125 19.3125 -10.03125 C 21.738281 -10.03125 22.953125 -11.957031 22.953125 -15.8125 L 22.953125 -31.484375 L 36 -31.484375 L 36 -17.8125 C 36 -11.125 34.453125 -6.253906 31.359375 -3.203125 C 28.265625 -0.148438 24.207031 1.375 19.1875 1.375 Z M 19.1875 1.375"/></g></g></g><g fill="currentColor" fill-opacity="1"><g transform="translate(297.99791, 180.000003)"><g><path d="M 2.890625 0 L 2.890625 -96.078125 L 16.1875 -96.078125 L 16.1875 -72.75 L 15.8125 -68.859375 L 15.9375 -68.859375 C 18.019531 -73.628906 21.363281 -76.015625 25.96875 -76.015625 C 33.65625 -76.015625 37.5 -70.957031 37.5 -60.84375 L 37.5 0 L 24.078125 0 L 24.078125 -59.203125 C 24.078125 -62.546875 22.867188 -64.21875 20.453125 -64.21875 C 19.109375 -64.21875 18.082031 -63.566406 17.375 -62.265625 C 16.664062 -60.972656 16.3125 -59.367188 16.3125 -57.453125 L 16.3125 0 Z M 2.890625 0"/></g></g></g><g fill="currentColor" fill-opacity="1"><g transform="translate(58.910523, 292.499995)"><g><path d="M 10.90625 0 L 10.90625 -80.40625 L 0.75 -80.40625 L 0.75 -93.328125 L 35 -93.328125 L 35 -80.40625 L 24.84375 -80.40625 L 24.84375 0 Z M 10.90625 0"/></g></g></g><g fill="currentColor" fill-opacity="1"><g transform="translate(94.660192, 292.499995)"><g><path d="M 13.921875 1.375 C 10.078125 1.375 7.109375 0.0820312 5.015625 -2.5 C 2.921875 -5.09375 1.875 -8.609375 1.875 -13.046875 L 1.875 -28.71875 C 1.875 -33.320312 2.984375 -36.984375 5.203125 -39.703125 C 7.421875 -42.421875 11 -43.78125 15.9375 -43.78125 C 17.269531 -43.78125 18.5 -43.632812 19.625 -43.34375 C 20.757812 -43.050781 21.867188 -42.648438 22.953125 -42.140625 L 22.953125 -59.328125 C 22.953125 -60.753906 22.703125 -61.988281 22.203125 -63.03125 C 21.703125 -64.070312 20.738281 -64.59375 19.3125 -64.59375 C 17.976562 -64.59375 17.035156 -64.113281 16.484375 -63.15625 C 15.941406 -62.195312 15.671875 -61.046875 15.671875 -59.703125 L 15.671875 -49.546875 L 2.515625 -49.546875 L 2.515625 -58.703125 C 2.515625 -63.640625 3.867188 -67.757812 6.578125 -71.0625 C 9.296875 -74.363281 13.539062 -76.015625 19.3125 -76.015625 C 25.25 -76.015625 29.597656 -74.445312 32.359375 -71.3125 C 35.117188 -68.175781 36.5 -63.929688 36.5 -58.578125 L 36.5 0 L 23.203125 0 L 23.203125 -2.265625 L 23.453125 -5.265625 L 23.328125 -5.265625 C 22.492188 -3.265625 21.320312 -1.65625 19.8125 -0.4375 C 18.3125 0.769531 16.347656 1.375 13.921875 1.375 Z M 15.171875 -14.671875 C 15.171875 -11.578125 16.382812 -10.03125 18.8125 -10.03125 C 20.488281 -10.03125 21.597656 -10.695312 22.140625 -12.03125 C 22.679688 -13.375 22.953125 -15.050781 22.953125 -17.0625 L 22.953125 -35 C 22.617188 -35.332031 22.097656 -35.625 21.390625 -35.875 C 20.679688 -36.125 19.90625 -36.25 19.0625 -36.25 C 17.394531 -36.25 16.328125 -35.660156 15.859375 -34.484375 C 15.398438 -33.316406 15.171875 -31.941406 15.171875 -30.359375 Z M 15.171875 -14.671875"/></g></g></g><g fill="currentColor" fill-opacity="1"><g transform="translate(133.922111, 292.499995)"><g><path d="M 2.890625 0 L 2.890625 -96.078125 L 16.3125 -96.078125 L 16.3125 0 Z M 2.890625 0"/></g></g></g><g fill="currentColor" fill-opacity="1"><g transform="translate(153.239473, 292.499995)"><g><path d="M 19.0625 1.375 C 13.457031 1.375 9.234375 -0.441406 6.390625 -4.078125 C 3.546875 -7.710938 2.125 -12.582031 2.125 -18.6875 L 2.125 -56.078125 C 2.125 -62.179688 3.566406 -67.03125 6.453125 -70.625 C 9.335938 -74.21875 13.582031 -76.015625 19.1875 -76.015625 C 24.625 -76.015625 28.765625 -74.382812 31.609375 -71.125 C 34.453125 -67.863281 35.875 -63.140625 35.875 -56.953125 L 35.875 -33.359375 L 15.546875 -33.359375 L 15.546875 -16.1875 C 15.546875 -11.914062 16.800781 -9.78125 19.3125 -9.78125 C 21.738281 -9.78125 22.953125 -11.578125 22.953125 -15.171875 L 22.953125 -26.84375 L 35.875 -26.84375 L 35.875 -15.421875 C 35.789062 -10.160156 34.285156 -6.046875 31.359375 -3.078125 C 28.429688 -0.109375 24.332031 1.375 19.0625 1.375 Z M 15.546875 -42.265625 L 22.953125 -42.265625 L 22.953125 -58.578125 C 23.035156 -62.847656 21.820312 -64.984375 19.3125 -64.984375 C 16.800781 -64.984375 15.546875 -62.847656 15.546875 -58.578125 Z M 15.546875 -42.265625"/></g></g></g><g fill="currentColor" fill-opacity="1"><g transform="translate(191.247016, 292.499995)"><g><path d="M 2.890625 0 L 2.890625 -74.515625 L 16.1875 -74.515625 L 16.1875 -72.75 L 15.8125 -68.859375 L 16.0625 -68.859375 C 18.0625 -73.628906 21.363281 -76.015625 25.96875 -76.015625 C 33.65625 -76.015625 37.5 -70.914062 37.5 -60.71875 L 37.5 0 L 24.078125 0 L 24.078125 -59.203125 C 24.078125 -62.546875 22.867188 -64.21875 20.453125 -64.21875 C 19.109375 -64.21875 18.082031 -63.566406 17.375 -62.265625 C 16.664062 -60.972656 16.3125 -59.367188 16.3125 -57.453125 L 16.3125 0 Z M 2.890625 0"/></g></g></g><g fill="currentColor" fill-opacity="1"><g transform="translate(231.637871, 292.499995)"><g><path d="M 19.3125 1.375 C 14.300781 1.375 10.769531 -0.00390625 8.71875 -2.765625 C 6.664062 -5.523438 5.640625 -9.410156 5.640625 -14.421875 L 5.640625 -63.09375 L 0.5 -63.09375 L 0.5 -74.515625 L 5.640625 -74.515625 L 5.640625 -89.3125 L 19.0625 -89.3125 L 19.0625 -74.515625 L 27.71875 -74.515625 L 27.71875 -63.09375 L 19.0625 -63.09375 L 19.0625 -17.3125 C 19.0625 -13.125 20.566406 -11.03125 23.578125 -11.03125 C 24.921875 -11.03125 26.46875 -11.203125 28.21875 -11.546875 L 28.21875 0.125 C 27.132812 0.457031 25.773438 0.75 24.140625 1 C 22.515625 1.25 20.90625 1.375 19.3125 1.375 Z M 19.3125 1.375"/></g></g></g><g fill="currentColor" fill-opacity="1"><g transform="translate(260.488482, 292.499995)"><g><path d="M 18.8125 1.25 C 13.207031 1.25 8.984375 -0.148438 6.140625 -2.953125 C 3.296875 -5.753906 1.832031 -9.742188 1.75 -14.921875 L 1.75 -27.84375 L 14.921875 -27.84375 L 14.921875 -14.671875 C 15.003906 -11.242188 16.425781 -9.53125 19.1875 -9.53125 C 21.363281 -9.53125 22.453125 -10.742188 22.453125 -13.171875 L 22.453125 -27.34375 C 22.453125 -29.269531 21.96875 -30.710938 21 -31.671875 C 20.039062 -32.628906 18.394531 -33.53125 16.0625 -34.375 C 11.289062 -35.957031 7.816406 -37.898438 5.640625 -40.203125 C 3.472656 -42.503906 2.390625 -45.785156 2.390625 -50.046875 L 2.390625 -61.96875 C 2.390625 -66.144531 3.679688 -69.53125 6.265625 -72.125 C 8.859375 -74.71875 12.957031 -76.015625 18.5625 -76.015625 C 24.164062 -76.015625 28.285156 -74.675781 30.921875 -72 C 33.554688 -69.320312 34.875 -65.5625 34.875 -60.71875 L 34.875 -50.546875 L 22.328125 -50.546875 L 22.328125 -61.09375 C 22.328125 -62.257812 22.078125 -63.21875 21.578125 -63.96875 C 21.078125 -64.726562 20.195312 -65.109375 18.9375 -65.109375 C 17.769531 -65.109375 16.957031 -64.789062 16.5 -64.15625 C 16.039062 -63.53125 15.8125 -62.757812 15.8125 -61.84375 L 15.8125 -50.296875 C 15.8125 -48.710938 16.3125 -47.476562 17.3125 -46.59375 C 18.3125 -45.71875 19.941406 -44.90625 22.203125 -44.15625 C 26.628906 -42.644531 30.015625 -40.757812 32.359375 -38.5 C 34.703125 -36.25 35.875 -32.78125 35.875 -28.09375 L 35.875 -13.296875 C 35.875 -8.691406 34.410156 -5.113281 31.484375 -2.5625 C 28.554688 -0.0195312 24.332031 1.25 18.8125 1.25 Z M 18.8125 1.25"/></g></g></g><g fill="currentColor" fill-opacity="1"><g transform="translate(298.245148, 292.499995)"><g><path d="M 8.90625 1.375 C 6.3125 1.375 4.40625 0.769531 3.1875 -0.4375 C 1.976562 -1.65625 1.375 -3.640625 1.375 -6.390625 C 1.375 -9.148438 1.976562 -11.132812 3.1875 -12.34375 C 4.40625 -13.5625 6.3125 -14.171875 8.90625 -14.171875 C 11.5 -14.171875 13.378906 -13.5625 14.546875 -12.34375 C 15.722656 -11.132812 16.3125 -9.148438 16.3125 -6.390625 C 16.3125 -3.640625 15.722656 -1.65625 14.546875 -0.4375 C 13.378906 0.769531 11.5 1.375 8.90625 1.375 Z M 8.90625 1.375"/></g></g></g></svg></template>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="content.js"></script>
+  <script src="invitation.js"></script>
+</body>
+</html>
