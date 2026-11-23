@@ -99,7 +99,7 @@ main { position: relative; z-index: 1; height: 100%; }
 .env-pocket { position: absolute; inset: 0; z-index: 3; border-radius: 6px; overflow: hidden; pointer-events: none; }
 .env-pocket > svg { position: absolute; inset: 0; width: 100%; height: 100%;
   filter: drop-shadow(0 -2px 6px rgba(10, 3, 50, .35)); }
-.pocket-grain, .flap-grain { position: absolute; inset: 0; background-image: var(--grain); background-size: 180px;
+.pocket-grain { position: absolute; inset: 0; background-image: var(--grain); background-size: 180px;
   opacity: .05; }
 .pocket-grain { -webkit-mask: linear-gradient(#000, #000); }
 .recipient { position: absolute; left: 0; right: 0; bottom: 11%; display: grid; justify-items: center; gap: .35em;
@@ -112,16 +112,8 @@ main { position: relative; z-index: 1; height: 100%; }
 .pocket-logo { position: absolute; right: 4.5%; bottom: 7%; width: 36px; color: var(--ice); opacity: .6; }
 
 /* Rabat */
-.env-flap { position: absolute; left: 0; right: 0; top: 0; height: 63%; z-index: 4;
-  transform-origin: 50% 0; transform-style: preserve-3d; will-change: transform; }
-.flap-face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
-.flap-face svg { width: 100%; height: 100%; display: block; }
-
-.flap-out .flap-grain { clip-path: polygon(0 0, 100% 0, 55% 90%, 50% 100%, 45% 90%); border-radius: 6px 6px 0 0; }
-.flap-in { transform: rotateX(180deg); }
-
 /* Cachet */
-.seal { position: absolute; z-index: 5; left: 50%; top: 59%; width: clamp(54px, calc(var(--env-w) * .135), 78px);
+.seal { position: absolute; z-index: 5; left: 50%; top: 47%; width: clamp(54px, calc(var(--env-w) * .135), 78px);
   aspect-ratio: 1; margin-left: calc(clamp(54px, calc(var(--env-w) * .135), 78px) / -2);
   margin-top: calc(clamp(54px, calc(var(--env-w) * .135), 78px) / -2);
   border-radius: 50%; display: grid; place-items: center;
@@ -150,7 +142,7 @@ main { position: relative; z-index: 1; height: 100%; }
    CARTE
    ========================================================================== */
 .card {
-  position: absolute; z-index: 2; left: 5%; right: 5%; top: 5%; height: 88%;
+  position: absolute; z-index: 2; left: 5%; right: 5%; top: 7%; height: 88%;
   background:
     radial-gradient(120% 80% at 0% 0%, #f1fdff 0%, transparent 60%),
     linear-gradient(180deg, #e3fbff 0%, var(--ice) 100%);
@@ -269,6 +261,62 @@ main { position: relative; z-index: 1; height: 100%; }
 .replay:hover { color: var(--ink); border-color: rgba(40, 15, 145, .35); }
 .replay:hover svg { transform: rotate(-200deg); }
 .replay:focus-visible { outline: 2px solid var(--amber); outline-offset: 4px; }
+
+/* ---------- Hologramme chromé (couleurs de la charte) ----------
+   Variables pilotées par invitation.js sur .card :
+   --px / --py : position du pointeur (0 → 1) · --hov : intensité du survol (0 → 1) */
+.card { --px: .3; --py: .35; --hov: 0; }
+.holo { position: absolute; inset: 0; pointer-events: none; overflow: hidden; border-radius: inherit; }
+/* film irisé, tons froids + fine bande ambre */
+.holo::before { content: ""; position: absolute; inset: 0; opacity: calc(.32 + var(--hov) * .18);
+  background: linear-gradient(118deg,
+    #daf9ff 0%, #8bacfa 12%, #daf9ff 22%, #b7c3ff 32%, #daf9ff 40%,
+    #f6a95f 45%, #daf9ff 50%, #8bacfa 60%, #daf9ff 70%, #9aa8fb 82%, #daf9ff 100%);
+  background-size: 320% 320%;
+  background-position: calc(var(--px) * 100%) calc(var(--py) * 100%); }
+/* diffraction très fine */
+.holo-lines { position: absolute; inset: 0; opacity: calc(.14 + var(--hov) * .12);
+  background: repeating-linear-gradient(118deg, transparent 0 7px, rgba(255,255,255,.9) 8px, transparent 9px 14px); }
+/* reflet chromé : point spéculaire + filet net, comme une surface métallique */
+.holo-glare { position: absolute; inset: 0; opacity: calc(.25 + var(--hov) * .75);
+  background:
+    radial-gradient(38% 55% at calc(var(--px) * 100%) calc(var(--py) * 100%), rgba(255,255,255,.95), rgba(255,255,255,0) 70%),
+    linear-gradient(calc(100deg + var(--px) * 30deg),
+      transparent calc(28% + var(--px) * 40%),
+      rgba(40,15,145,.14) calc(33% + var(--px) * 40%),
+      rgba(255,255,255,.9) calc(36% + var(--px) * 40%),
+      rgba(40,15,145,.12) calc(39% + var(--px) * 40%),
+      transparent calc(44% + var(--px) * 40%)); }
+/* biseau : arête claire en haut/gauche, ombre indigo en bas/droite, liseré chromé qui tourne */
+.card::after { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; z-index: 3;
+  box-shadow:
+    inset 0 1.5px 0 rgba(255,255,255,.95),
+    inset 1.5px 0 0 rgba(255,255,255,.6),
+    inset 0 -2px 3px rgba(40,15,145,.28),
+    inset -2px 0 3px rgba(40,15,145,.18); }
+.card::before { content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1.5px; pointer-events: none; z-index: 3;
+  background: conic-gradient(from calc(var(--px) * 360deg + 200deg),
+    #daf9ff, #4d61f4, #280f91, #8bacfa, #ffffff, #f6a95f, #daf9ff, #4d61f4, #daf9ff);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+  opacity: calc(.45 + var(--hov) * .55); }
+/* nom en métal poli */
+.cover-name {
+  background: linear-gradient(calc(165deg + (var(--px) - .5) * 50deg),
+    #280f91 0%, #3b2bc4 34%, #8bacfa 45%, #ffffff 50%, #4d61f4 56%, #280f91 72%, #3420b4 100%);
+  background-size: 100% 220%; background-position: 0 calc(var(--py) * 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  filter: drop-shadow(0 1px 0 rgba(255,255,255,.7)); }
+.cover { z-index: 1; }
+.card.is-full::before, .card.is-full::after { display: none; }
+.card.is-full .holo { height: 420px; bottom: auto;
+  -webkit-mask-image: linear-gradient(#000 0%, rgba(0,0,0,.5) 45%, transparent 100%);
+          mask-image: linear-gradient(#000 0%, rgba(0,0,0,.5) 45%, transparent 100%); }
+.card.is-full .holo::before { opacity: .26; }
+.card.is-full .holo-lines { opacity: .1; }
+.card.is-full .holo-glare { opacity: .35; }
+.card.is-full .full { z-index: 1; }
+@media (prefers-reduced-motion: reduce) { .card { --hov: 0 !important; } }
 
 /* ---------- Touches « tech » ---------- */
 .mono { font-family: var(--font-mono); font-weight: 400; letter-spacing: .06em; }

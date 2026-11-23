@@ -66,6 +66,9 @@
                 <path d="M200 116 A84 84 0 0 0 116 200 L200 200 Z" fill="url(#ornB)" opacity=".8"/>
               </svg>
 
+              <!-- Film holographique (couleurs de la charte) -->
+              <div class="holo" aria-hidden="true"><span class="holo-lines"></span><span class="holo-glare"></span></div>
+
               <!-- Recto visible dans l'enveloppe -->
               <div class="cover" aria-hidden="true">
                 <span class="cover-eyebrow" data-bind="event.eyebrow"></span>
@@ -197,38 +200,10 @@
               <span class="pocket-code" data-bind="guest.code"></span>
             </div>
 
-            <!-- Rabat supérieur (deux faces) + cachet -->
-            <div class="env-flap" id="flap" aria-hidden="true">
-              <div class="flap-face flap-out">
-                <svg viewBox="0 0 100 44" preserveAspectRatio="none">
-                  <defs>
-                    <linearGradient id="flapOut" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0" stop-color="#3a28c4"/>
-                      <stop offset="1" stop-color="#5a4df0"/>
-                    </linearGradient>
-                  </defs>
-                  <path d="M0 0 H100 L55.2 39.6 Q50 44 44.8 39.6 Z" fill="url(#flapOut)"/>
-                  <path d="M0 0 L44.8 39.6 Q50 44 55.2 39.6 L100 0" fill="none" stroke="#daf9ff" stroke-opacity=".22" stroke-width=".25" vector-effect="non-scaling-stroke"/>
-                </svg>
-                <span class="flap-grain"></span>
-              </div>
-              <div class="flap-face flap-in">
-                <svg viewBox="0 0 100 44" preserveAspectRatio="none">
-                  <defs>
-                    <linearGradient id="flapIn" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0" stop-color="#2a1499"/>
-                      <stop offset="1" stop-color="#3a28c4"/>
-                    </linearGradient>
-                  </defs>
-                  <path d="M0 0 H100 L55.2 39.6 Q50 44 44.8 39.6 Z" fill="url(#flapIn)"/>
-                </svg>
-              </div>
-            </div>
-
             <!-- Reflet qui suit le pointeur -->
             <span class="env-sheen" id="sheen" aria-hidden="true"></span>
 
-            <!-- Cachet (suit le rabat à l'ouverture) -->
+            <!-- Cachet -->
             <span class="seal" id="seal" aria-hidden="true">
               <span class="seal-ring"></span>
               <span class="seal-mark">IT.</span>

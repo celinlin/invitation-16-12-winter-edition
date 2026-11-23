@@ -108,7 +108,7 @@
 
   /* ---------- 3. Éléments ---------- */
   const envelope = $("#envelope"), envStage = $("#envStage"), envTilt = $("#envTilt");
-  const flap = $("#flap"), seal = $("#seal"), card = $("#card"), cover = $(".cover", card);
+  const seal = $("#seal"), card = $("#card"), cover = $(".cover", card);
   const openBtn = $("#openBtn"), hint = $("#hint"), hintLine = $(".hint-line");
   const reading = $("#reading"), slot = $("#slot"), scene = $("#scene");
   const recipient = $(".recipient"), shadow = $(".env-shadow"), live = $("#live");
@@ -135,7 +135,6 @@
   /* ---------- 4. Entrée ---------- */
   function intro() {
     gsap.set(envelope, { visibility: "visible" });
-    gsap.set(flap, { rotationX: 0, zIndex: 4, autoAlpha: 1 });
     gsap.set(seal, { autoAlpha: 1, scale: 1, y: 0, rotation: 0 });
     gsap.set(card, { yPercent: 0 });
 
@@ -155,7 +154,9 @@
      .add(() => { openBtn.disabled = false; idle(); });
   }
 
+  let holoTween;
   function idle() {
+    holoTween = gsap.fromTo(card, { "--px": .2, "--py": .3 }, { "--px": .8, "--py": .65, duration: 5, ease: "sine.inOut", yoyo: true, repeat: -1 });
     floatTween = gsap.to(envelope, { y: -6, duration: 2.8, ease: "sine.inOut", yoyo: true, repeat: -1 });
     gsap.to(shadow, { scale: .94, autoAlpha: .8, duration: 2.8, ease: "sine.inOut", yoyo: true, repeat: -1 });
     hintTween = gsap.fromTo(hintLine, { backgroundPosition: "0 0", scaleX: .4, transformOrigin: "0 50%" },
@@ -171,12 +172,31 @@
     const r = envTilt.getBoundingClientRect();
     sheen.style.setProperty("--mx", `${((e.clientX - r.left) / r.width) * 100}%`);
     sheen.style.setProperty("--my", `${((e.clientY - r.top) / r.height) * 100}%`);
+    // effet chromé : reflets pilotés par la position du pointeur sur la carte
+    const cr = card.getBoundingClientRect();
+    const over = e.clientX > cr.left && e.clientX < cr.right && e.clientY > cr.top && e.clientY < r.bottom;
+    const px = gsap.utils.clamp(0, 1, (e.clientX - cr.left) / cr.width);
+    const py = gsap.utils.clamp(0, 1, (e.clientY - cr.top) / (r.bottom - cr.top));
+    holoTween && holoTween.pause();
+    gsap.to(card, { "--px": px, "--py": py, "--hov": over ? 1 : .25, yPercent: over ? -16 : 0,
+      duration: .7, ease: "power3.out", overwrite: "auto" });
     const dx = (e.clientX - (r.left + r.width / 2)) / window.innerWidth;
     const dy = (e.clientY - (r.top + r.height / 2)) / window.innerHeight;
     tiltY(gsap.utils.clamp(-7, 7, dx * 14));
     tiltX(gsap.utils.clamp(-6, 6, -dy * 12));
   }
   window.addEventListener("pointermove", onMove, { passive: true });
+  document.addEventListener("pointerleave", () => {
+    if (opened) return;
+    gsap.to(card, { "--hov": 0, yPercent: 0, duration: .8, ease: "power3.out", overwrite: "auto" });
+    holoTween && holoTween.resume();
+  });
+  window.addEventListener("pointermove", (e) => {
+    if (!opened || busy || reduce.matches || !finePointer.matches) return;
+    const r = card.getBoundingClientRect();
+    const px = gsap.utils.clamp(0, 1, (e.clientX - r.left) / r.width);
+    gsap.to(card, { "--px": px, duration: 1.2, ease: "power3.out", overwrite: "auto" });
+  }, { passive: true });
 
   /* ---------- 6. Ouverture ---------- */
   function open() {
@@ -185,6 +205,7 @@
     openBtn.disabled = true;
     floatTween && floatTween.kill();
     hintTween && hintTween.kill();
+    holoTween && holoTween.kill();
     gsap.killTweensOf(shadow);
     tiltX(0); tiltY(0);
 
@@ -206,19 +227,17 @@
       .to(envelope, { y: 0, duration: .3, ease: "power2.out" }, 0)
       .to(seal, { scale: .9, duration: .16, ease: "power2.in" }, 0)
       .to(seal, { scale: 1.06, duration: .22, ease: "power2.out" }, .16)
-      // le cachet se détache et accompagne le rabat
+      // le cachet s'efface, un reflet traverse l'hologramme
       .to(seal, { autoAlpha: 0, scale: .85, duration: .4, ease: "power2.in" }, .34)
-      // 1. le rabat se déplie
-      .to(flap, { rotationX: 180, duration: 1.05, ease: "power3.inOut" }, .36)
-      .set(flap, { zIndex: 1 }, .36 + 1.05 * .5)
-      .to(flap, { autoAlpha: 0, duration: .4, ease: "power1.out" }, .36 + 1.05 * .42)
-      .to(recipient, { autoAlpha: 0, duration: .5 }, .5)
+      .to(card, { "--px": 1, "--py": .2, "--hov": 1, duration: .9, ease: "power2.inOut", overwrite: "auto" }, .2)
+      .to(card, { "--hov": 0, duration: .8, ease: "power2.out" }, 1.1)
+      .to(recipient, { autoAlpha: 0, duration: .5 }, .4)
       // léger recul de l'enveloppe pour laisser respirer la carte
-      .to(envStage, { y: mobile ? "8vh" : "10vh", scale: mobile ? .94 : .9, duration: 1.3, ease: "power3.inOut" }, 1.0)
-      // 2–3. la carte apparaît puis glisse hors de l'enveloppe
-      .to(card, { yPercent: -66, duration: 1.15, ease: "power3.inOut" }, 1.15)
-      // 4. elle rejoint sa position de lecture
-      .add(toReading, 2.2);
+      .to(envStage, { y: mobile ? "8vh" : "10vh", scale: mobile ? .94 : .9, duration: 1.2, ease: "power3.inOut" }, .45)
+      // la carte glisse hors de l'enveloppe
+      .to(card, { yPercent: -66, duration: 1.1, ease: "power3.inOut" }, .55)
+      // puis rejoint sa position de lecture
+      .add(toReading, 1.6);
   }
 
   function placeCardInReading() {
@@ -276,6 +295,7 @@
         envelope.insertBefore(card, $(".env-pocket", envelope));
         gsap.set([card, cover, ...$$(".reveal", card)], { clearProps: "all" });
         gsap.set([envStage, envTilt, envelope, seal, recipient, shadow, hint], { clearProps: "transform,opacity,visibility" });
+        gsap.set(card, { "--px": .3, "--py": .35, "--hov": 0 });
         scene.removeAttribute("aria-hidden");
         scene.style.visibility = "";
         opened = false; busy = false;
