@@ -139,6 +139,28 @@
   rsvpBtn.href = C.rsvp.url;
   $("#heroCta").href = C.rsvp.url;
 
+  /* ---------- Lecture sur mobile : en-tête qui s'efface, barre de réservation fixe ---------- */
+  const stickyCta = $("#stickyCta"), stickyBtn = $("#stickyBtn");
+  stickyBtn.href = C.rsvp.url;
+  const ctaSeen = new Map();
+  function updateSticky() {
+    const show = opened && !busy && ![...ctaSeen.values()].some(Boolean) && reading.scrollTop > 120;
+    stickyCta.classList.toggle("is-visible", show);
+    stickyCta.setAttribute("aria-hidden", String(!show));
+    stickyBtn.tabIndex = show ? 0 : -1;
+  }
+  if ("IntersectionObserver" in window) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((en) => ctaSeen.set(en.target, en.isIntersecting));
+      updateSticky();
+    }, { root: $("#reading") });
+    [$("#heroCta"), rsvpBtn].forEach((el) => io.observe(el));
+  }
+  $("#reading").addEventListener("scroll", () => {
+    document.body.classList.toggle("is-scrolled", $("#reading").scrollTop > 40);
+    updateSticky();
+  }, { passive: true });
+
   /* ---------- Compte à rebours vers l'ouverture des portes ---------- */
   const doors = new Date(C.event.doorsISO).getTime();
   const end = new Date(C.event.endISO).getTime();
@@ -285,8 +307,9 @@
       // la carte ouverte penche en 3D autour de la zone visible à l'écran
       const vh = window.innerHeight, cy = vh / 2;
       gsap.set(card, { transformPerspective: 1400, transformOrigin: `50% ${cy - r.top}px` });
-      cardTiltY(gsap.utils.clamp(-6, 6, ((x - (r.left + r.width / 2)) / (r.width / 2)) * 6));
-      cardTiltX(gsap.utils.clamp(-5, 5, (-(y - cy) / cy) * 5));
+      const amp = isMouse ? 1 : .45;   // plus doux au doigt, pour ne pas gêner le défilement
+      cardTiltY(gsap.utils.clamp(-6, 6, ((x - (r.left + r.width / 2)) / (r.width / 2)) * 6 * amp));
+      cardTiltX(gsap.utils.clamp(-5, 5, (-(y - cy) / cy) * 5 * amp));
       relax = setTimeout(() => {
         gsap.to(card, { "--hov": .15, duration: 1.4, ease: "power2.out" });
         cardTiltX(0); cardTiltY(0);
@@ -396,6 +419,8 @@
       autoAlpha: 0, duration: reduce.matches ? .3 : .6, ease: "power2.inOut",
       onComplete() {
         reading.setAttribute("aria-hidden", "true");
+        document.body.classList.remove("is-scrolled");
+        stickyCta.classList.remove("is-visible");
         card.classList.remove("is-full");
         envelope.insertBefore(card, $(".env-pocket", envelope));
         gsap.set([card, cover, ...$$(".reveal", card)], { clearProps: "all" });

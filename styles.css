@@ -251,6 +251,22 @@ main { position: relative; z-index: 1; height: 100%; }
 .club { margin: 0; font-size: 13.5px; line-height: 1.55; color: #4b3fa0; }
 @media (min-width: 720px) { .club { white-space: nowrap; font-size: 13px; } }
 
+/* ---------- En-tête fixe : s'efface pendant la lecture ---------- */
+.lang, .brandmark { transition: opacity .35s ease, transform .35s ease; }
+body.is-scrolled .lang, body.is-scrolled .brandmark { opacity: 0; transform: translateY(-10px); pointer-events: none; }
+
+/* ---------- Barre de réservation fixe (mobile) ---------- */
+.sticky-cta { position: fixed; z-index: 25; left: 0; right: 0; bottom: 0; display: none;
+  padding: 12px max(16px, env(safe-area-inset-right, 0px)) calc(12px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+  background: linear-gradient(to top, rgba(21, 6, 92, .92) 40%, rgba(21, 6, 92, 0));
+  transform: translateY(110%); transition: transform .45s var(--ease-out); }
+.sticky-cta.is-visible { transform: translateY(0); }
+.sticky-btn { display: flex; align-items: center; justify-content: space-between; gap: 12px; text-decoration: none;
+  font-family: var(--font-head); font-weight: 600; font-size: 20px; color: var(--ink); background: var(--ice);
+  padding: 15px 22px; border-radius: 999px; box-shadow: 0 12px 30px -10px rgba(0, 0, 0, .6); }
+.sticky-btn svg { width: 22px; height: 22px; color: var(--amber); }
+.sticky-btn:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; }
+
 /* ---------- Langue FR / EN ---------- */
 .lang { position: fixed; z-index: 30; top: calc(clamp(16px, 3.2vw, 32px) + env(safe-area-inset-top, 0px));
   left: calc(clamp(16px, 3.2vw, 36px) + env(safe-area-inset-left, 0px));
@@ -376,6 +392,15 @@ main { position: relative; z-index: 1; height: 100%; }
 
 /* ---------- Mobile ---------- */
 @media (max-width: 600px) {
+  :root { --env-w: min(560px, 92vw, calc(100svh * 1.0)); }
+  .sticky-cta { display: block; }
+  .reading-slot { padding-bottom: 110px; }
+  .card.is-full .full { padding: 26px 22px 30px; }
+  .btn { display: flex; }
+  .btn-ghost { white-space: nowrap; font-size: 12.5px; }
+  .signature { font-size: 16px; }
+  .rsvp { padding: 22px 18px; }
+  .rsvp-title { font-size: 34px; }
   .duo, .facts { grid-template-columns: 1fr; }
   .fact + .fact { padding-left: 0; border-left: 0; border-top: 1px solid rgba(40, 15, 145, .14); }
   .timeline { grid-template-columns: 1fr; gap: 18px; margin-left: 4px; }
@@ -385,13 +410,18 @@ main { position: relative; z-index: 1; height: 100%; }
   .step::before { top: 4px; }
   .step-label { margin-top: 4px; }
   .btn { width: 100%; justify-content: space-between; font-size: 20px; padding: 16px 22px 16px 24px; white-space: nowrap; }
-  .card.is-full   .reading-slot { padding-top: 76px; }
+  .reading-slot { padding-top: 76px; }
   .hint { font-size: 10.5px; letter-spacing: .22em; gap: 10px; white-space: nowrap; }
   .hint-line { width: 28px; }
   .recipient { bottom: 8%; }
   .btn-ghost { margin: 12px 0 0; width: 100%; justify-content: center; }
   .cd-sep { display: none; }
   .full-code { font-size: 10px; }
+}
+@media (max-width: 420px) {
+  .pocket-code, .pocket-logo { display: none; }
+  .recipient { bottom: 9%; }
+  .recipient-name { font-size: clamp(22px, 7vw, 30px); }
 }
 @media (max-height: 520px) and (orientation: landscape) {
   :root { --env-w: min(440px, 70vw, calc(100svh * 1.05)); }
