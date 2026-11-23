@@ -39,7 +39,7 @@
     <p class="sub">Une invitation par personne : son nom, pourquoi elle est invitée, ce qui l'attend. Les invités se modifient dans <code style="color:var(--ice)">guests.local.json</code> (sur votre ordinateur uniquement), cette page se met à jour toute seule.</p>
     <p class="warn">Page interne, à ouvrir uniquement sur votre ordinateur. Elle n'est pas mise en ligne sur Vercel.</p>
     <label class="base">Adresse du site en ligne
-      <input id="base" type="url" placeholder="https://invitation.intertech-talents.com/">
+      <input id="base" type="url" placeholder="https://celinlin.github.io/invitation-16-12-winter-edition/">
     </label>
     <table>
       <thead><tr><th>Invité</th><th class="why">Pourquoi</th><th>Lien personnel</th></tr></thead>
@@ -55,10 +55,16 @@
       let saved = ""; try { saved = localStorage.getItem("it-base") || ""; } catch (e) {}
       baseInput.value = saved || here;
       const rows = document.getElementById("rows");
-      function link(id) {
+      // Le lien contient la fiche de l'invité (encodée) : rien n'est stocké en ligne.
+      function token(g) {
+        const json = JSON.stringify({ p: g.prenom || "", n: g.nom || "", w: g.why || "", a: g.awaits || "" });
+        let bin = ""; new TextEncoder().encode(json).forEach((x) => (bin += String.fromCharCode(x)));
+        return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+      }
+      function link(g) {
         let b = baseInput.value.trim() || here || "./";
         if (!b.endsWith("/") && !b.endsWith(".html")) b += "/";
-        return b + "?pour=" + encodeURIComponent(id);
+        return b + "?i=" + token(g);
       }
       function render() {
         rows.textContent = "";
@@ -67,12 +73,12 @@
           const n = document.createElement("td"); n.className = "name"; n.textContent = [g.prenom, g.nom].filter(Boolean).join(" ");
           const w = document.createElement("td"); w.className = "why"; w.textContent = g.why || "—";
           const l = document.createElement("td");
-          const url = link(g.id);
+          const url = link(g);
           const c = document.createElement("code"); c.textContent = url;
           const a = document.createElement("div"); a.className = "actions";
           const copy = document.createElement("button"); copy.type = "button"; copy.textContent = "Copier le lien";
           copy.onclick = async () => { try { await navigator.clipboard.writeText(url); copy.textContent = "Copié ✓"; } catch (e) { copy.textContent = "Copie impossible"; } setTimeout(() => (copy.textContent = "Copier le lien"), 1600); };
-          const open = document.createElement("a"); open.className = "open"; open.href = "index.html?pour=" + encodeURIComponent(g.id); open.target = "_blank"; open.rel = "noopener"; open.textContent = "Aperçu";
+          const open = document.createElement("a"); open.className = "open"; open.href = "index.html?i=" + token(g); open.target = "_blank"; open.rel = "noopener"; open.textContent = "Aperçu";
           a.append(copy, open); l.append(c, a);
           tr.append(n, w, l); rows.appendChild(tr);
         });

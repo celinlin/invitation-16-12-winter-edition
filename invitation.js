@@ -11,8 +11,22 @@
 
   /* ---------- 1. Invité ---------- */
   const params = new URLSearchParams(location.search);
-  const rawId = (params.get("pour") || params.get("invite") || params.get("i") || decodeURIComponent(location.hash.slice(1)) || C.defaultGuest || "").trim().toLowerCase();
-  const g = await loadGuest(rawId);
+  const token = (params.get("i") || "").trim();
+  const rawId = (params.get("pour") || params.get("invite") || decodeURIComponent(location.hash.slice(1)) || C.defaultGuest || "").trim().toLowerCase();
+  const g = decodeToken(token) || await loadGuest(rawId);
+
+  /* Lien autonome : la fiche de l'invité est encodée dans le lien lui-même (?i=…),
+     générée par liens.html. Aucune liste d'invités n'est stockée en ligne. */
+  function decodeToken(t) {
+    if (!t || t.length > 4000 || !/^[A-Za-z0-9_-]+$/.test(t)) return null;
+    try {
+      const b64 = t.replace(/-/g, "+").replace(/_/g, "/") + "===".slice((t.length + 3) % 4);
+      const bytes = Uint8Array.from(atob(b64), (ch) => ch.charCodeAt(0));
+      const o = JSON.parse(new TextDecoder().decode(bytes));
+      if (!o || !o.p) return null;
+      return { prenom: String(o.p).slice(0, 80), nom: String(o.n || "").slice(0, 80), why: String(o.w || "").slice(0, 600), awaits: String(o.a || "").slice(0, 600) };
+    } catch (e) { return null; }
+  }
 
   /* L'invité est demandé au serveur (api/invite) : seule sa fiche est renvoyée,
      la liste complète n'est jamais envoyée au navigateur.
