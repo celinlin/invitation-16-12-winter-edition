@@ -42,7 +42,7 @@ window.INVITATION = {
     ],
     facts: ["Sur invitation", "Places limitées", "Billet catering inclus"],
     noTickets: "Aucun billet ne sera vendu sur place.",
-    signature: "Le batch Winter 2026"
+    signature: "Intertech Talents · Édition Winter 2026"
   },
 
   rsvp: {
